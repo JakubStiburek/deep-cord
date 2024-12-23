@@ -18,7 +18,7 @@ import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dt
 
 @ApiTags('audio')
 @Controller('api/audio/records')
-export class FilesControllerTsController {
+export class FilesController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
