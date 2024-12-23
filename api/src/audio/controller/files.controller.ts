@@ -7,8 +7,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiConsumes,
+  ApiBody,
+  ApiQuery,
+  ApiTags,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dto';
 
+@ApiTags('audio')
 @Controller('api/audio/records')
 export class FilesControllerTsController {
   @Post()
@@ -27,11 +35,12 @@ export class FilesControllerTsController {
     example: 'mp3',
     required: false,
   })
+  @ApiOkResponse({ type: UploadAudioFileResponseDto })
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudioFile(
     @UploadedFile() file: Express.Multer.File,
     @Query('extension') extension?: string,
-  ) {
+  ): Promise<UploadAudioFileResponseDto> {
     const directory = './uploads';
 
     if (!fs.existsSync(directory)) {
@@ -44,10 +53,10 @@ export class FilesControllerTsController {
     };
 
     const ext = extension || filename.extension || 'mp3';
-    const path = `./uploads/record-${filename.name}-${new Date().toISOString()}.${ext}`;
+    const path = `./uploads/record-${filename.name}-${new Date().toISOString().split('T')[0]}.${ext}`;
 
     await fs.promises.writeFile(path, file.buffer);
 
-    return { path };
+    return new UploadAudioFileResponseDto(path);
   }
 }
