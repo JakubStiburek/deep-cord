@@ -7,16 +7,32 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiBody, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 
 @Controller('api/audio/records')
 export class FilesControllerTsController {
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { file: { type: 'string', format: 'binary' } },
+    },
+  })
+  @ApiQuery({
+    name: 'extension',
+    type: String,
+    description: 'File type of the uploaded file.',
+    example: 'mp3',
+    default: 'mp3',
+    required: false,
+  })
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudioFile(
     @UploadedFile() file: Express.Multer.File,
-    @Query('extension') extension: string,
+    @Query('extension') extension?: string,
   ) {
-    const ext = extension || '.mp3';
+    const ext = extension || 'mp3';
     const path = `./uploads/record-${file.filename}-${new Date().toISOString()}.${ext}`;
     await fs.promises.writeFile(path, file.buffer);
     return { path };
