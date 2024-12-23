@@ -53,7 +53,8 @@ export class FilesControllerTsController {
     };
 
     const ext = extension || filename.extension || 'mp3';
-    const path = `./uploads/record-${filename.name}-${new Date().toISOString().split('T')[0]}.${ext}`;
+    const date = new Date().toISOString().split('T')[0];
+    const path = `./uploads/record-${filename.name}-${date}.${ext}`;
 
     await fs.promises.writeFile(path, file.buffer);
 
