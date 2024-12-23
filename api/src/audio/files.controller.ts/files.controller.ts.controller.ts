@@ -22,9 +22,9 @@ export class FilesControllerTsController {
   @ApiQuery({
     name: 'extension',
     type: String,
-    description: 'File type of the uploaded file.',
+    description:
+      'Extension is inferred from filename, this field overrides it. If non is provided file extension defaults to mp3.',
     example: 'mp3',
-    default: 'mp3',
     required: false,
   })
   @UseInterceptors(FileInterceptor('file'))
@@ -32,8 +32,12 @@ export class FilesControllerTsController {
     @UploadedFile() file: Express.Multer.File,
     @Query('extension') extension?: string,
   ) {
-    const ext = extension || 'mp3';
-    const path = `./uploads/record-${file.filename}-${new Date().toISOString()}.${ext}`;
+    const filename = {
+      name: file.originalname.split('.')[0],
+      extension: file.originalname.split('.')[1],
+    };
+    const ext = extension || filename.extension || 'mp3';
+    const path = `./uploads/record-${filename.name}-${new Date().toISOString()}.${ext}`;
     await fs.promises.writeFile(path, file.buffer);
     return { path };
   }
