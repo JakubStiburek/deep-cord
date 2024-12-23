@@ -1,0 +1,19 @@
+meta {
+  name: Upload audio file
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/audio/records
+  body: multipartForm
+  auth: none
+}
+
+params:query {
+  ~extension: mp4
+}
+
+body:multipart-form {
+  file: @file(/Users/jakub/Downloads/test.mp3)
+}
