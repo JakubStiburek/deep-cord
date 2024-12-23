@@ -32,13 +32,22 @@ export class FilesControllerTsController {
     @UploadedFile() file: Express.Multer.File,
     @Query('extension') extension?: string,
   ) {
+    const directory = './uploads';
+
+    if (!fs.existsSync(directory)) {
+      await fs.promises.mkdir(directory);
+    }
+
     const filename = {
       name: file.originalname.split('.')[0],
       extension: file.originalname.split('.')[1],
     };
+
     const ext = extension || filename.extension || 'mp3';
     const path = `./uploads/record-${filename.name}-${new Date().toISOString()}.${ext}`;
+
     await fs.promises.writeFile(path, file.buffer);
+
     return { path };
   }
 }
