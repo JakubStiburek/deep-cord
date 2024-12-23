@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiBody, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
 
 @Controller('api/audio/records')
 export class FilesControllerTsController {

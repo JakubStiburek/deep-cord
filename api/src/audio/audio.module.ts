@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FilesControllerTsController } from './files.controller.ts/files.controller.ts.controller';
+import { FilesControllerTsController } from './controller/files.controller';
 
 @Module({
-  controllers: [FilesControllerTsController]
+  controllers: [FilesControllerTsController],
 })
 export class AudioModule {}
