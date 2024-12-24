@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import {
   Controller,
+  Inject,
   Post,
   Query,
   UploadedFile,
@@ -19,6 +20,11 @@ import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dt
 @ApiTags('audio')
 @Controller('api/audio/records')
 export class FilesController {
+  constructor(
+    @Inject('UPLOAD_DIRECTORY_PATH')
+    private readonly uploadDirectoryPath: string,
+  ) {}
+
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -41,10 +47,10 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
     @Query('extension') extension?: string,
   ): Promise<UploadAudioFileResponseDto> {
-    const directory = './uploads';
-
-    if (!fs.existsSync(directory)) {
-      await fs.promises.mkdir(directory);
+    try {
+      await fs.promises.access(this.uploadDirectoryPath, fs.constants.W_OK);
+    } catch (_) {
+      await fs.promises.mkdir(this.uploadDirectoryPath, { recursive: true });
     }
 
     const filename = {
@@ -54,7 +60,7 @@ export class FilesController {
 
     const ext = extension || filename.extension || 'mp3';
     const date = new Date().toISOString().split('T')[0];
-    const path = `./uploads/record-${filename.name}-${date}.${ext}`;
+    const path = `${this.uploadDirectoryPath}/record-${filename.name}-${date}.${ext}`;
 
     await fs.promises.writeFile(path, file.buffer);
 

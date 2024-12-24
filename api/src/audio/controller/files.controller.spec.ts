@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { FilesController } from './files.controller';
@@ -6,6 +7,12 @@ describe('(endpoint) FilesController', () => {
   const setupApp = async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [FilesController],
+      providers: [
+        {
+          provide: 'UPLOAD_DIRECTORY_PATH',
+          useValue: './test/uploads',
+        },
+      ],
     }).compile();
 
     const app = moduleRef.createNestApplication();
@@ -13,6 +20,10 @@ describe('(endpoint) FilesController', () => {
 
     return app;
   };
+
+  afterAll(async () => {
+    await fs.promises.rmdir('./test/uploads', { recursive: true });
+  });
 
   it('should save file', async () => {
     const app = await setupApp();
@@ -32,7 +43,7 @@ describe('(endpoint) FilesController', () => {
       .expect(201)
       .then((res) => {
         expect(res.body).toStrictEqual({
-          path: expect.stringContaining('./uploads/record-audio-sample'),
+          path: expect.stringContaining('./test/uploads/record-audio-sample'),
         });
       });
   });
