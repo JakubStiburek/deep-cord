@@ -1,7 +1,9 @@
 import * as fs from 'fs';
 import {
   Controller,
+  Get,
   Inject,
+  NotFoundException,
   Post,
   Query,
   UploadedFile,
@@ -16,6 +18,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dto';
+import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 
 @ApiTags('audio')
 @Controller('api/audio/records')
@@ -65,5 +68,19 @@ export class FilesController {
     await fs.promises.writeFile(path, file.buffer);
 
     return new UploadAudioFileResponseDto(path);
+  }
+
+  @Get()
+  @ApiOkResponse({ type: ListUploadedFilesResponseDto })
+  async listUploadedFiles(): Promise<ListUploadedFilesResponseDto> {
+    try {
+      await fs.promises.access(this.uploadDirectoryPath, fs.constants.R_OK);
+    } catch (_) {
+      return new ListUploadedFilesResponseDto([]);
+    }
+
+    const files = await fs.promises.readdir(this.uploadDirectoryPath);
+
+    return new ListUploadedFilesResponseDto(files);
   }
 }
