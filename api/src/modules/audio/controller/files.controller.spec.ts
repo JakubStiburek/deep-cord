@@ -57,14 +57,14 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should save file', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample.mp3')
         .expect(201);
     });
 
     it('should save file with correct path', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample.mp3')
         .expect(201)
@@ -76,7 +76,7 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should save file with file extension', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample.mp3')
         .expect(201)
@@ -88,7 +88,7 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should save file with provided extension', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample.mp3')
         .query('extension=wav')
@@ -101,7 +101,7 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should save file with default extension', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample-no-extension')
         .expect(201)
@@ -115,7 +115,7 @@ describe('(endpoint) FilesController', () => {
 
   describe('GET api/audio/records', () => {
     it('should return empty array if no files are found', async () => {
-      return request(app.getHttpServer())
+      return request(httpServer)
         .get(path)
         .expect(200)
         .then((res) => {
@@ -135,7 +135,7 @@ describe('(endpoint) FilesController', () => {
         node_modules: mock.load('node_modules'),
       });
 
-      return request(app.getHttpServer())
+      return request(httpServer)
         .get(path)
         .expect(200)
         .then((res) => {
