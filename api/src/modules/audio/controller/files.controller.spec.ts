@@ -43,7 +43,7 @@ describe('(endpoint) FilesController', () => {
       .expect(201)
       .then((res) => {
         expect(res.body).toStrictEqual({
-          path: expect.stringContaining('./test/uploads/record-audio-sample'),
+          uri: expect.stringContaining('./test/uploads/record-audio-sample'),
         });
       });
   });
@@ -57,7 +57,7 @@ describe('(endpoint) FilesController', () => {
       .expect(201)
       .then((res) => {
         expect(res.body).toStrictEqual({
-          path: expect.stringContaining('mp3'),
+          uri: expect.stringContaining('mp3'),
         });
       });
   });
@@ -72,7 +72,7 @@ describe('(endpoint) FilesController', () => {
       .expect(201)
       .then((res) => {
         expect(res.body).toStrictEqual({
-          path: expect.stringContaining('wav'),
+          uri: expect.stringContaining('wav'),
         });
       });
   });
@@ -86,7 +86,7 @@ describe('(endpoint) FilesController', () => {
       .expect(201)
       .then((res) => {
         expect(res.body).toStrictEqual({
-          path: expect.stringContaining('mp3'),
+          uri: expect.stringContaining('mp3'),
         });
       });
   });

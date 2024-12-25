@@ -15,6 +15,7 @@ import {
   ApiQuery,
   ApiTags,
   ApiOkResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dto';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
@@ -28,6 +29,9 @@ export class FilesController {
   ) {}
 
   @Post()
+  @ApiOperation({
+    description: 'Upload audio files to storage.',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -62,14 +66,17 @@ export class FilesController {
 
     const ext = extension || filename.extension || 'mp3';
     const date = new Date().toISOString().split('T')[0];
-    const path = `${this.uploadDirectoryPath}/record-${filename.name}-${date}.${ext}`;
+    const uri = `${this.uploadDirectoryPath}/record-${filename.name}-${date}.${ext}`;
 
-    await fs.promises.writeFile(path, file.buffer);
+    await fs.promises.writeFile(uri, file.buffer);
 
-    return new UploadAudioFileResponseDto(path);
+    return new UploadAudioFileResponseDto(uri);
   }
 
   @Get()
+  @ApiOperation({
+    description: 'List files in storage.',
+  })
   @ApiOkResponse({ type: ListUploadedFilesResponseDto })
   async listUploadedFiles(): Promise<ListUploadedFilesResponseDto> {
     try {

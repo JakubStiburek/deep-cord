@@ -5,9 +5,9 @@ export class UploadAudioFileResponseDto {
     description: 'File location on the server.',
     example: './uploads/record-conversation-2024-01-21.mp3',
   })
-  readonly path: string;
+  readonly uri: string;
 
-  constructor(path: string) {
-    this.path = path;
+  constructor(uri: string) {
+    this.uri = uri;
   }
 }
