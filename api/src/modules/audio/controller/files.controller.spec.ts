@@ -3,10 +3,15 @@ import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { FilesController } from './files.controller';
 import * as mock from 'mock-fs';
+import { INestApplication } from '@nestjs/common';
+import { Server } from 'http';
 
 describe('(endpoint) FilesController', () => {
-  let app;
-  const setupApp = async () => {
+  const path = '/api/audio/records';
+  let app: INestApplication;
+  let httpServer: Server;
+
+  beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [FilesController],
       providers: [
@@ -17,22 +22,27 @@ describe('(endpoint) FilesController', () => {
       ],
     }).compile();
 
-    const app = moduleRef.createNestApplication();
+    app = moduleRef.createNestApplication();
     await app.init();
-
-    return app;
-  };
-  const path = '/api/audio/records';
-  beforeAll(async () => {
-    app = await setupApp();
+    httpServer = app.getHttpServer();
 
     mock({
       test: {
-        'audio-sample.mp3': '',
-        'audio-sample-no-extension': '',
+        'audio-sample.mp3': Buffer.from([]),
+        'audio-sample-no-extension': Buffer.from([]),
         uploads: {},
       },
-      node_modules: mock.load('node_modules'),
+      node_modules: {
+        '.pnpm': {
+          'jest-runner@29.7.0': {
+            node_modules: {
+              'jest-worker': mock.load(
+                'node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-worker',
+              ),
+            },
+          },
+        },
+      },
     });
   });
 
