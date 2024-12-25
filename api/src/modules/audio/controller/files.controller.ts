@@ -40,7 +40,7 @@ export class FilesController {
     name: 'extension',
     type: String,
     description:
-      'Extension is inferred from filename, this field overrides it. If non is provided file extension defaults to mp3.',
+      'Extension is inferred from filename, this field overrides it. If none is provided file extension defaults to mp3.',
     example: 'mp3',
     required: false,
   })
