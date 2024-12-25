@@ -22,7 +22,7 @@ describe('(endpoint) FilesController', () => {
   };
 
   afterAll(async () => {
-    await fs.promises.rmdir('./test/uploads', { recursive: true });
+    await fs.promises.rm('./test/uploads', { recursive: true });
   });
 
   it('should save file', async () => {
