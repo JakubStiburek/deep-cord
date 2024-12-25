@@ -87,6 +87,6 @@ export class FilesController {
 
     const files = await fs.promises.readdir(this.uploadDirectoryPath);
 
-    return new ListUploadedFilesResponseDto(files);
+    return new ListUploadedFilesResponseDto(files, this.uploadDirectoryPath);
   }
 }
