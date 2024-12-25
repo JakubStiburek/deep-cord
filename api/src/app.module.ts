@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AudioModule } from './audio/audio.module';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
+import configuration from './common/config/configuration';
+import { AudioModule } from './modules/audio/audio.module';
 
 @Module({
   imports: [
