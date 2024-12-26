@@ -29,6 +29,11 @@ class AnnotationSpanDto {
 
 class AnnotationDto {
   @ApiProperty({
+    example: '1696f02e-d3a8-4084-bc32-b76738afefeb',
+  })
+  readonly id: string;
+
+  @ApiProperty({
     description: 'Seconds',
   })
   readonly span: AnnotationSpanDto;
