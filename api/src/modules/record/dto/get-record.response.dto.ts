@@ -1,10 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
-enum AnnotationType {
-  TRANSCRIPT = 'transcript',
-  CONFIDENCE = 'confidence',
-  SPEAKER = 'speaker',
-}
+import { AnnotationTypeEnum } from '../model/value-object/annotation-type.vo';
 
 type Value = string | number;
 
@@ -39,10 +34,10 @@ class AnnotationDto {
   readonly span: AnnotationSpanDto;
 
   @ApiProperty({
-    enum: AnnotationType,
-    example: AnnotationType.TRANSCRIPT,
+    enum: AnnotationTypeEnum,
+    example: AnnotationTypeEnum.TRANSCRIPT,
   })
-  readonly type: AnnotationType;
+  readonly type: AnnotationTypeEnum;
 
   @ApiProperty({
     example: 'word',
