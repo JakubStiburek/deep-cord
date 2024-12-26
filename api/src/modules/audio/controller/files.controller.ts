@@ -21,7 +21,7 @@ import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dt
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 
 @ApiTags('audio')
-@Controller('api/audio/records')
+@Controller('api/audio/files')
 export class FilesController {
   constructor(
     @Inject('UPLOAD_DIRECTORY_PATH')

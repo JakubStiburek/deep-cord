@@ -1,9 +1,4 @@
-import {
-  Controller,
-  NotFoundException,
-  NotImplementedException,
-  Post,
-} from '@nestjs/common';
+import { Controller, NotFoundException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('transcript')

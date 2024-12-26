@@ -7,7 +7,7 @@ import { INestApplication } from '@nestjs/common';
 import { Server } from 'http';
 
 describe('(endpoint) FilesController', () => {
-  const path = '/api/audio/records';
+  const path = '/api/audio/files';
   let app: INestApplication;
   let httpServer: Server;
 
