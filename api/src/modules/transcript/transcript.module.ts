@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TranscriptController } from './transcript/transcript.controller';
+import { TranscriptController } from './controller/transcript.controller';
 
 @Module({
-  controllers: [TranscriptController]
+  controllers: [TranscriptController],
 })
 export class TranscriptModule {}
