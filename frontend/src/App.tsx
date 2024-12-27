@@ -1,5 +1,6 @@
 import { FileRejection, useDropzone } from "react-dropzone";
 import { useState, useCallback } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 import axios from "axios";
 
@@ -20,23 +21,31 @@ export default function Home() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    accept: {
+      "audio/mp3": [".mp3"],
+    },
+    multiple: false,
   });
 
   const onUpload = async () => {
     setUploadStatus("Uploading....");
     const formData = new FormData();
-    console.log(formData);
-    // selectedFiles.forEach((file) => {
-    //   formData.append("file", file);
-    // });
-    // try {
-    //   const response = await axios.post("/api/upload", formData);
-    //   console.log(response.data);
-    //   setUploadStatus("upload successful");
-    // } catch (error) {
-    //   console.log("fileUpload" + error);
-    //   setUploadStatus("Upload failed..");
-    // }
+
+    selectedFiles.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/audio/records`,
+        formData
+      );
+      console.log(response.data);
+      setUploadStatus("upload successful");
+    } catch (error) {
+      console.log("fileUpload" + error);
+      setUploadStatus("Upload failed..");
+    }
   };
 
   return (
