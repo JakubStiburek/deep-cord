@@ -40,3 +40,5 @@ pnpm run test:watch
 # Or just once
 pnpm run test
 ```
+
+The server runs on PORT 3000. You'll find the OpenAPI documentation at `http://localhost:3000/api`
