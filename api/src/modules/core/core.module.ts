@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
+import { RecordController } from './controller/record.controller';
+import { ModelModule } from './model/model.module';
 import { FilesController } from './controller/files.controller';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
-  controllers: [FilesController],
+  controllers: [RecordController, FilesController],
+  imports: [ModelModule],
   providers: [
     {
       provide: 'UPLOAD_DIRECTORY_PATH',
@@ -15,4 +18,4 @@ import { ConfigService } from '@nestjs/config';
     ConfigService,
   ],
 })
-export class AudioModule {}
+export class CoreModule {}

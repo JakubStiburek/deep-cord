@@ -19,8 +19,8 @@ docker compose down
 You can use your preferred database client to connect to the Postgres database.
 See docker compose for the connection details.
 
-You can also run `./scripts/connect-db.sh` which will run `pgcli` and connect to the
-Postgres database.
+You can also run `./scripts/connect-db.sh` which will run `pgcli` and connect
+to the Postgres database.
 
 ```shell
 npm run db:pgcli

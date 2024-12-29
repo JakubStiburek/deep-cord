@@ -1,18 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './common/config/configuration';
-import { AudioModule } from './modules/audio/audio.module';
-import { TranscriptModule } from './modules/transcript/transcript.module';
-import { RecordModule } from './modules/record/record.module';
+import { CoreModule } from './modules/core/core.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
     }),
-    AudioModule,
-    TranscriptModule,
-    RecordModule,
+    CoreModule,
   ],
   controllers: [],
   providers: [],
