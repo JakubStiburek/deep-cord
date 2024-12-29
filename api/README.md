@@ -22,8 +22,13 @@ See docker compose for the connection details.
 You can also run `./scripts/connect-db.sh` which will run `pgcli` and connect
 to the Postgres database.
 
+> PNPM recommended
+>
+> All referenced scripts from package.json run with pnpm in the examples but you
+> can use npm or yarn as well
+
 ```shell
-npm run db:pgcli
+pnpm run db:pgcli
 ```
 
 To start the Nest server run:
@@ -57,20 +62,26 @@ brew install golang-migrate
 Create migration files:
 
 ```shell
-npm run db:migrate:create {migration_name}
+pnpm run db:migrate:create {migration_name}
 ```
 
 Run migration:
 
 ```shell
-npm run db:migrate
+pnpm run db:migrate
 ```
 
 Roll back migration(s):
 
 ```shell
 # Roll back all migrations
-npm run db:migrate:down
+pnpm run db:migrate:down
 # Roll back to a specific migration (version)
-npm run db:migreat:down {version number}
+pnpm run db:migreat:down {version number}
+```
+
+Generate TypeScript types from database schema after each migration.
+
+```shell
+pnpm run db:types:generate
 ```
