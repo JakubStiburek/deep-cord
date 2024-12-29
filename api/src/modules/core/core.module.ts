@@ -3,6 +3,7 @@ import { RecordController } from './controller/record.controller';
 import { ModelModule } from './model/model.module';
 import { FilesController } from './controller/files.controller';
 import { ConfigService } from '@nestjs/config';
+import { PostgresClient } from '../../common/database/postgres-client';
 
 @Module({
   controllers: [RecordController, FilesController],
@@ -15,7 +16,12 @@ import { ConfigService } from '@nestjs/config';
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'POSTGRES_CLIENT',
+      useExisting: PostgresClient,
+    },
     ConfigService,
+    PostgresClient,
   ],
 })
 export class CoreModule {}
