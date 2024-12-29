@@ -16,10 +16,6 @@ import { PostgresClient } from '../../common/database/postgres-client';
       },
       inject: [ConfigService],
     },
-    {
-      provide: 'POSTGRES_CLIENT',
-      useExisting: PostgresClient,
-    },
     ConfigService,
     PostgresClient,
   ],

@@ -6,10 +6,11 @@ import * as postgres from 'postgres';
 export class PostgresClient {
   constructor(private configService: ConfigService) {}
 
-  private PG_HOST = this.configService.get<string>('PGHOST');
-  private PG_DATABASE = this.configService.get<string>('PGDATABASE');
-  private PG_USER = this.configService.get<string>('PGUSER');
-  private PG_PASSWORD = this.configService.get<string>('PGPASSWORD');
+  private PG_HOST = this.configService.get<string>('PG_HOST');
+  private PG_DATABASE = this.configService.get<string>('PG_DATABASE');
+  private PG_USER = this.configService.get<string>('PG_USER');
+  private PG_PASSWORD = this.configService.get<string>('PG_PASSWORD');
+  private NODE_ENV = this.configService.get<string>('NODE_ENV');
 
   private readonly URL = `postgres://username:password@host/database`;
 
@@ -18,6 +19,6 @@ export class PostgresClient {
     password: this.PG_PASSWORD,
     host: this.PG_HOST,
     database: this.PG_DATABASE,
-    ssl: 'require',
+    ssl: this.NODE_ENV === 'local' ? undefined : 'require',
   });
 }
