@@ -11,7 +11,7 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Routes>
-          <Route element={<DashboardLayout />}>
+          <Route path="/" element={<DashboardLayout />}>
             <Route index element={<RecordListPage />} />
             <Route path="/detail" element={<RecordDetailPage />} />
           </Route>

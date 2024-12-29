@@ -1,6 +1,9 @@
+@import "vis-timeline/styles/vis-timeline-graph2d.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -83,4 +86,16 @@
   h1 {
     @apply text-3xl font-bold md:text-4xl;
   }
+}
+
+.vis-item {
+  @apply bg-purple-800 text-purple-400 cursor-pointer hover:bg-purple-500;
+}
+
+.vis-timeline {
+  @apply rounded-sm;
+}
+
+.vis-vertical {
+  @apply border-gray-700 !important;
 }

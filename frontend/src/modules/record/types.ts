@@ -5,18 +5,16 @@ export type Record = {
   };
   annotationTiers: [
     {
-      annotations: [
-        {
-          id: string;
-          span: {
-            start: number;
-            end: number;
-          };
-          type: string;
-          value: string;
-          meta: object;
-        }
-      ];
+      annotations: {
+        id: string;
+        span: {
+          start: number;
+          end: number;
+        };
+        type: string;
+        value: string;
+        meta: object;
+      }[];
     }
   ];
   label: string;
