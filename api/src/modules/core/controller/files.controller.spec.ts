@@ -51,7 +51,7 @@ describe('(endpoint) FilesController', () => {
     await app.close();
   });
 
-  describe('POST api/audio/records', () => {
+  describe('POST api/audio/files', () => {
     afterAll(async () => {
       await fs.promises.rm('./test/uploads', { recursive: true });
     });
@@ -113,7 +113,7 @@ describe('(endpoint) FilesController', () => {
     });
   });
 
-  describe('GET api/audio/records', () => {
+  describe('GET api/audio/files', () => {
     it('should return empty array if no files are found', async () => {
       return request(httpServer)
         .get(path)
@@ -142,6 +142,8 @@ describe('(endpoint) FilesController', () => {
           expect(res.body).toStrictEqual({
             files: [
               {
+                id: expect.any(String),
+                name: 'audio-sample',
                 uri: expect.any(String),
               },
             ],

@@ -1,14 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AnnotationTypeEnum } from '../model/value-object/annotation-type.vo';
+import { FileDto } from './file.dto';
 
 type Value = string | number;
-
-class FileDto {
-  @ApiProperty({
-    example: './uploads/record-oritginal-file-name-2024-12-24.mp4',
-  })
-  readonly uri: string;
-}
 
 class AnnotationSpanDto {
   @ApiProperty({

@@ -19,8 +19,9 @@ import {
 } from '@nestjs/swagger';
 import { UploadAudioFileResponseDto } from '../dto/upload-audio-file.response.dto';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
+import { FileDto } from '../dto/file.dto';
 
-@ApiTags('audio')
+@ApiTags('files')
 @Controller('api/audio/files')
 export class FilesController {
   constructor(
@@ -87,6 +88,15 @@ export class FilesController {
 
     const files = await fs.promises.readdir(this.uploadDirectoryPath);
 
-    return new ListUploadedFilesResponseDto(files, this.uploadDirectoryPath);
+    return new ListUploadedFilesResponseDto(
+      files.map(
+        (file) =>
+          new FileDto(
+            'id',
+            file.split('.')[0],
+            this.uploadDirectoryPath + '/' + file,
+          ),
+      ),
+    );
   }
 }
