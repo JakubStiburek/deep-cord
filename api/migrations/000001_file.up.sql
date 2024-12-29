@@ -1,0 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE file (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    uri TEXT NOT NULL UNIQUE
+);
