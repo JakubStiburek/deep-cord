@@ -17,15 +17,19 @@ export type Json = unknown;
 export interface File {
   id: string;
   uri: string;
+  name: string;
+  created_at: Date;
 }
 export interface FileInput {
   id?: string;
   uri: string;
+  name: string;
+  created_at?: Date;
 }
 const file = {
   tableName: 'file',
-  columns: ['id', 'uri'],
-  requiredForInsert: ['uri'],
+  columns: ['id', 'uri', 'name', 'created_at'],
+  requiredForInsert: ['uri', 'name'],
   primaryKey: 'id',
   foreignKeys: {},
   $type: null as unknown as File,

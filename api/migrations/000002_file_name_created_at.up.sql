@@ -1,0 +1,3 @@
+ALTER TABLE file
+ADD name text NOT NULL,
+ADD created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
