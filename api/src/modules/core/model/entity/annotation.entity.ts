@@ -1,7 +1,7 @@
 import { IsOptional, IsUUID, Validate, ValidateNested } from 'class-validator';
 import { AnnotationSpan } from '../value-object/annotation-span.vo';
 import { AnnotationType } from '../value-object/annotation-type.vo';
-import { IsMatchingAnnotationType } from './validation/is-matching-annotation-type.decorator';
+import { IsMatchingAnnotationType } from './validation/is-matching-annotation-type.validator';
 
 export class Annotation {
   @IsUUID('4')
