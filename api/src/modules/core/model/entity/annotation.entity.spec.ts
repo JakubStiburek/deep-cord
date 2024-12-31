@@ -7,52 +7,53 @@ import {
   AnnotationTypeEnum,
 } from '../value-object/annotation-type.vo';
 
-function getParams(override?: {
+export function getAnnotationParams(override?: {
   id?: string;
   span?: AnnotationSpan;
   type?: AnnotationType;
   value?: string | number;
-  meta?: any;
 }) {
   return {
     id: uuid(),
     span: new AnnotationSpan(1, 5),
     type: new AnnotationType(AnnotationTypeEnum.TRANSCRIPT),
     value: 'word',
-    meta: undefined,
     ...override,
   };
 }
 
 describe('(unit) Annotation', () => {
   it.each([
-    { params: getParams(), errors: 0 },
-    { params: getParams({ id: undefined }), errors: 1 },
-    { params: getParams({ id: '' }), errors: 1 },
-    { params: getParams({ id: 'invalid' }), errors: 1 },
-    { params: getParams({ span: new AnnotationSpan(-1, 5) }), errors: 1 },
+    { params: getAnnotationParams(), errors: 0 },
+    { params: getAnnotationParams({ id: undefined }), errors: 1 },
+    { params: getAnnotationParams({ id: '' }), errors: 1 },
+    { params: getAnnotationParams({ id: 'invalid' }), errors: 1 },
     {
-      params: getParams({
+      params: getAnnotationParams({ span: new AnnotationSpan(-1, 5) }),
+      errors: 1,
+    },
+    {
+      params: getAnnotationParams({
         type: new AnnotationType('invalid' as AnnotationTypeEnum),
       }),
       errors: 2,
     },
     {
-      params: getParams({
+      params: getAnnotationParams({
         type: new AnnotationType(AnnotationTypeEnum.TRANSCRIPT),
         value: 1,
       }),
       errors: 1,
     },
     {
-      params: getParams({
+      params: getAnnotationParams({
         type: new AnnotationType(AnnotationTypeEnum.SPEAKER),
         value: 1,
       }),
       errors: 1,
     },
     {
-      params: getParams({
+      params: getAnnotationParams({
         type: new AnnotationType(AnnotationTypeEnum.CONFIDENCE),
         value: 'word',
       }),
@@ -61,13 +62,7 @@ describe('(unit) Annotation', () => {
   ])('should create and validate instance', ({ params, errors }) => {
     expect(
       validateSync(
-        new Annotation(
-          params.id,
-          params.span,
-          params.type,
-          params.value,
-          params.meta,
-        ),
+        new Annotation(params.id, params.span, params.type, params.value),
       ).length,
     ).toBe(errors);
   });
