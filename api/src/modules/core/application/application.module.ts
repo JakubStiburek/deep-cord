@@ -32,7 +32,7 @@ import * as postgres from 'postgres';
 
         const nodeEnv = configService.get('node_env');
 
-        return postgres(`postgres://username:password@host/database`, {
+        return postgres('postgres://username:password@host/database', {
           username: pgConfig.pg_user,
           password: pgConfig.pg_password,
           host: pgConfig.pg_host,
