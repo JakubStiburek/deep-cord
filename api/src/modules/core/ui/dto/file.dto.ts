@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { DateTime } from 'luxon';
+import { Valid } from 'luxon/src/_util';
 
 export class FileDto {
   @ApiProperty({
@@ -16,9 +18,20 @@ export class FileDto {
   })
   readonly uri: string;
 
-  constructor(id: string, name: string, uri: string) {
+  @ApiProperty({
+    example: DateTime.now().toISO(),
+  })
+  readonly createdAt: string;
+
+  constructor(
+    id: string,
+    name: string,
+    uri: string,
+    createdAt: DateTime<Valid>,
+  ) {
     this.id = id;
     this.uri = uri;
     this.name = name;
+    this.createdAt = createdAt.toISO();
   }
 }

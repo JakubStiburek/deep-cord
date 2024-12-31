@@ -1,0 +1,17 @@
+import { Sql } from 'postgres';
+import { Either } from 'purify-ts';
+import { AudioFile } from '../entity/audio-file.entity';
+import { UncaughtException } from '../exception/uncaught.exception';
+import { NotUniqueException } from '../exception/not-unique.exception';
+
+export interface AudioFileRepository {
+  add(
+    name: string,
+    uri: string,
+    sql: Sql,
+  ): Promise<Either<UncaughtException | NotUniqueException, AudioFile>>;
+
+  getAll(sql: Sql): Promise<Either<UncaughtException, AudioFile[]>>;
+}
+
+export const AudioFileRepositorySymbol = Symbol('AudioFileRepository');
