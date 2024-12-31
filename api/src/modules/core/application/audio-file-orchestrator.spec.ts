@@ -1,0 +1,26 @@
+import { AudioFileOrchestrator } from './audio-file-orchestrator';
+
+describe('(unit) AudioFileOrchestrator', () => {
+  it('should use provided params and return filename', () => {
+    expect(
+      AudioFileOrchestrator.getFilename('og.mp4', 'name', 'wav'),
+    ).toStrictEqual({
+      name: 'name',
+      extension: 'wav',
+    });
+  });
+
+  it('should use original name to infer filename', () => {
+    expect(AudioFileOrchestrator.getFilename('test.mp4')).toStrictEqual({
+      name: 'test',
+      extension: 'mp4',
+    });
+  });
+
+  it('should default to mp3 extension', () => {
+    expect(AudioFileOrchestrator.getFilename('test')).toStrictEqual({
+      name: 'test',
+      extension: 'mp3',
+    });
+  });
+});

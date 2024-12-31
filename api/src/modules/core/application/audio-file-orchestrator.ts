@@ -25,10 +25,11 @@ export class AudioFileOrchestrator {
       await fs.promises.mkdir(this.uploadDirectoryPath, { recursive: true });
     }
 
-    const filename = {
-      name: dto.name || file.originalname.split('.')[0] || file.originalname,
-      extension: dto.extension || file.originalname.split('.')[1] || 'mp3',
-    };
+    const filename = AudioFileOrchestrator.getFilename(
+      file.originalname,
+      dto.name,
+      dto.extension,
+    );
 
     const uri = `${this.uploadDirectoryPath}/record-${filename.name}-${DateTime.now().toISODate()}.${filename.extension}`;
 
@@ -39,5 +40,12 @@ export class AudioFileOrchestrator {
 
   async getAll() {
     return await this.repository.getAll(this.db.sql);
+  }
+
+  static getFilename(originalname: string, name?: string, extension?: string) {
+    return {
+      name: name || originalname.split('.')[0],
+      extension: extension || originalname.split('.')[1] || 'mp3',
+    };
   }
 }
