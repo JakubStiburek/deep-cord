@@ -1,19 +1,19 @@
 import * as fs from 'fs';
 import { Inject } from '@nestjs/common';
-import { PostgresClient } from '../../../common/database/postgres-client';
 import {
   AudioFileRepository,
   AudioFileRepositorySymbol,
 } from '../model/repository/audio-file.repository';
 import { UploadFileDto } from '../ui/dto/upload-file.dto';
 import { DateTime } from 'luxon';
+import { Sql } from 'postgres';
 
 export class AudioFileOrchestrator {
   constructor(
     @Inject('UPLOAD_DIRECTORY_PATH')
     private readonly uploadDirectoryPath: string,
-    @Inject(PostgresClient)
-    private readonly db: PostgresClient,
+    @Inject('POSTGRES_CLIENT')
+    private readonly sql: Sql,
     @Inject(AudioFileRepositorySymbol)
     private readonly repository: AudioFileRepository,
   ) {}
@@ -35,11 +35,11 @@ export class AudioFileOrchestrator {
 
     await fs.promises.writeFile(uri, file.buffer);
 
-    return await this.repository.add(filename.name, uri, this.db.sql);
+    return await this.repository.add(filename.name, uri, this.sql);
   }
 
   async getAll() {
-    return await this.repository.getAll(this.db.sql);
+    return await this.repository.getAll(this.sql);
   }
 
   static getFilename(originalname: string, name?: string, extension?: string) {
