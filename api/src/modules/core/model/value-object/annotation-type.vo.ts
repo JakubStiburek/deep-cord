@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum } from 'class-validator';
 
 export enum AnnotationTypeEnum {
   TRANSCRIPT = 'transcript',

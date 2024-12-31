@@ -1,9 +1,8 @@
-import * as fs from 'fs';
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { FilesController } from './files.controller';
 import * as mock from 'mock-fs';
-import { ConflictException, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Server } from 'http';
 import { AudioFileOrchestrator } from '../../application/audio-file-orchestrator';
 import { DateTime } from 'luxon';

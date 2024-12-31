@@ -12,8 +12,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiConsumes,
-  ApiBody,
-  ApiQuery,
   ApiTags,
   ApiOkResponse,
   ApiOperation,

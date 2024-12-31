@@ -12,10 +12,10 @@ export class AudioFileOrchestrator {
   constructor(
     @Inject('UPLOAD_DIRECTORY_PATH')
     private readonly uploadDirectoryPath: string,
-    @Inject(AudioFileRepositorySymbol)
-    private readonly repository: AudioFileRepository,
     @Inject(PostgresClient)
     private readonly db: PostgresClient,
+    @Inject(AudioFileRepositorySymbol)
+    private readonly repository: AudioFileRepository,
   ) {}
 
   async add(file: Express.Multer.File, dto: UploadFileDto) {
