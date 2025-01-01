@@ -19,6 +19,7 @@ export interface Annotation {
   type: string;
   value: string;
   created_at: Date;
+  file_id: string;
 }
 export interface AnnotationInput {
   id?: string;
@@ -27,13 +28,24 @@ export interface AnnotationInput {
   type: string;
   value: string;
   created_at?: Date;
+  file_id: string;
 }
 const annotation = {
   tableName: 'annotation',
-  columns: ['id', 'start_time', 'end_time', 'type', 'value', 'created_at'],
-  requiredForInsert: ['start_time', 'end_time', 'type', 'value'],
+  columns: [
+    'id',
+    'start_time',
+    'end_time',
+    'type',
+    'value',
+    'created_at',
+    'file_id',
+  ],
+  requiredForInsert: ['start_time', 'end_time', 'type', 'value', 'file_id'],
   primaryKey: 'id',
-  foreignKeys: {},
+  foreignKeys: {
+    file_id: { table: 'file', column: 'id', $type: null as unknown as File },
+  },
   $type: null as unknown as Annotation,
   $input: null as unknown as AnnotationInput,
 } as const;
