@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: woodpecker-server
+    plan: free
+    env:
+      - key: WOODPECKER_OPEN
+        value: "true"
+      - key: WOODPECKER_HOST
+        sync: true # This expects you to define WOODPECKER_HOST in Render's environment variables UI or Blueprint.
+      - key: WOODPECKER_GITHUB
+        value: "true"
+      - key: WOODPECKER_GITHUB_CLIENT
+        sync: true
+      - key: WOODPECKER_GITHUB_SECRET
+        sync: true
+      - key: WOODPECKER_AGENT_SECRET
+        sync: true
+    disk:
+      name: woodpecker-server-data
+      sizeGB: 1
+    dockerImage: woodpeckerci/woodpecker-server:latest
+    ports:
+      - 8000
+    healthCheckPath: "/health" # Adjust this to match Woodpecker server's health endpoint if available.
+
+  - type: worker
+    name: woodpecker-agent
+    plan: free
+    env:
+      - key: WOODPECKER_SERVER
+        value: "http://woodpecker-server:9000"
+      - key: WOODPECKER_AGENT_SECRET
+        sync: true
+    dockerImage: woodpeckerci/woodpecker-agent:latest
+    startCommand: "agent"
+    mounts:
+      - type: volume
+        name: woodpecker-agent-config
+        path: /etc/woodpecker
+      - type: volume
+        path: /var/run/docker.sock
+        hostPath: /var/run/docker.sock
+
+volumes:
+  - name: woodpecker-server-data
+    sizeGB: 1
+  - name: woodpecker-agent-config
+    sizeGB: 1
