@@ -91,7 +91,7 @@ describe('(endpoint) FilesController', () => {
     it('should return 500 on other exception', () => {
       jest
         .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(Left(new UncaughtException(new Error())));
+        .mockResolvedValueOnce(Left(new UncaughtException('error')));
 
       return request(httpServer)
         .post(path)
@@ -154,7 +154,7 @@ describe('(endpoint) FilesController', () => {
     it('should return 500 on other exception', () => {
       jest
         .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce(Left(new UncaughtException(new Error())));
+        .mockResolvedValueOnce(Left(new UncaughtException('error')));
 
       return request(httpServer).get(path).expect(500);
     });

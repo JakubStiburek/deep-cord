@@ -35,7 +35,10 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
         return Left(new NotUniqueException());
       }
 
-      return Left(new UncaughtException(err));
+      console.warn({ err });
+      return Left(
+        new UncaughtException('AudioFileRepositoryPostgres uncaught exception'),
+      );
     }
   }
 
@@ -56,7 +59,10 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
         ),
       );
     } catch (err) {
-      return Left(new UncaughtException(err));
+      console.warn({ err });
+      return Left(
+        new UncaughtException('AudioFileRepositoryPostgres uncaught exception'),
+      );
     }
   }
 }

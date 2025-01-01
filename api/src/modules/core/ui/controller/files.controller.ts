@@ -43,7 +43,6 @@ export class FilesController {
 
     return result
       .mapLeft((err) => {
-        this.logger.warn(err);
         if (err instanceof NotUniqueException) {
           throw new ConflictException();
         }
@@ -65,7 +64,6 @@ export class FilesController {
 
     return result
       .mapLeft((err) => {
-        this.logger.warn(err);
         throw new InternalServerErrorException();
       })
       .map((files) => {
