@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT!
  *
@@ -9,7 +8,6 @@
  * $ pg-to-ts generate -c postgresql://username:password@localhost:5432/deep_cord -t annotation -t file -t schema_migrations -s public
  *
  */
-
 
 export type Json = unknown;
 
@@ -37,7 +35,7 @@ const annotation = {
   primaryKey: 'id',
   foreignKeys: {},
   $type: null as unknown as Annotation,
-  $input: null as unknown as AnnotationInput
+  $input: null as unknown as AnnotationInput,
 } as const;
 
 // Table file
@@ -60,7 +58,7 @@ const file = {
   primaryKey: 'id',
   foreignKeys: {},
   $type: null as unknown as File,
-  $input: null as unknown as FileInput
+  $input: null as unknown as FileInput,
 } as const;
 
 // Table schema_migrations
@@ -79,9 +77,8 @@ const schema_migrations = {
   primaryKey: 'version',
   foreignKeys: {},
   $type: null as unknown as SchemaMigrations,
-  $input: null as unknown as SchemaMigrationsInput
+  $input: null as unknown as SchemaMigrationsInput,
 } as const;
-
 
 export interface TableTypes {
   annotation: {
@@ -102,4 +99,4 @@ export const tables = {
   annotation,
   file,
   schema_migrations,
-}
+};
