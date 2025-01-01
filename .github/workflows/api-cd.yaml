@@ -14,4 +14,4 @@ jobs:
 
     steps:
       - name: Trigger Deploy Webhook
-        run: curl "https://api.render.com/deploy/srv-asdflkjdkfjdkfj?api_key=${{ secrets.RENDER_API_KEY }}"
+        run: curl "https://api.render.com/deploy/srv-ctqkmsbqf0us73estr6g?key=${{ secrets.RENDER_API_KEY }}"
