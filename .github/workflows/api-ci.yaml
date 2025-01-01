@@ -1,0 +1,46 @@
+name: API-CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "api/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "api/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+
+      - name: Install PNPM
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: pnpm install
+
+      - name: Format code
+        working-directory: ./api
+        run: pnpm run format
+
+      - name: Build application
+        working-directory: ./api
+        run: pnpm run build
+
+      - name: Run tests
+        working-directory: ./api
+        run: pnpm test
