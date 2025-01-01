@@ -35,45 +35,4 @@ services:
     staticPublishPath: dist
     rootDir: frontend
 
-  - type: web
-    name: woodpecker-server
-    plan: free
-    runtime: docker
-    image:
-      url: woodpeckerci/woodpecker-server:latest
-    envVars:
-      - key: PORT
-        value: "8000"
-      - key: WOODPECKER_OPEN
-        value: "true"
-      - key: WOODPECKER_HOST
-        value: "your-woodpecker-host"
-      - key: WOODPECKER_GITHUB
-        value: "true"
-      - key: WOODPECKER_GITHUB_CLIENT
-        sync: false
-      - key: WOODPECKER_GITHUB_SECRET
-        sync: false
-      - key: WOODPECKER_AGENT_SECRET
-        sync: false
-    region: frankfurt
-    disk:
-      mountPath: /var/lib/woodpecker
-      name: woodpecker-server-data
-      sizeGB: 1
-
-  - type: worker
-    name: woodpecker-agent
-    plan: free
-    runtime: docker
-    image:
-      url: woodpeckerci/woodpecker-agent:latest
-    envVars:
-      - key: WOODPECKER_SERVER
-        value: "http://woodpecker-server:9000"
-      - key: WOODPECKER_AGENT_SECRET
-        sync: false
-    startCommand: "agent"
-    region: frankfurt
-
 version: "1"
