@@ -1,0 +1,33 @@
+name: Database Migration
+
+on:
+  workflow_run:
+    workflows: ["API-CI"] # Triggered when API-CI workflow completes
+    types:
+      - completed
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install PNPM
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: pnpm install
+
+      - name: Run Database Migration
+        working-directory: ./api
+        run: pnpm run db:prod:migrate
