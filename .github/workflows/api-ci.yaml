@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  format-build-test:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,10 +32,6 @@ jobs:
       - name: Install dependencies
         working-directory: ./api
         run: pnpm install
-
-      - name: Format code
-        working-directory: ./api
-        run: pnpm run format
 
       - name: Build application
         working-directory: ./api
