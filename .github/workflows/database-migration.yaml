@@ -24,6 +24,12 @@ jobs:
       - name: Install PNPM
         run: npm install -g pnpm
 
+      - name: Install golang-migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.0/migrate.linux-amd64.tar.gz | tar xz
+          sudo mv migrate /usr/local/bin/migrate
+          migrate -version  # Verify installation
+
       - name: Install dependencies
         working-directory: ./api
         run: pnpm install
