@@ -1,46 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FileDto } from './file.dto';
-import { AnnotationTypeEnum } from '../../model/value-object/annotation-type.vo';
-
-type Value = string | number;
-
-class AnnotationSpanDto {
-  @ApiProperty({
-    example: 15.55,
-  })
-  readonly start: number;
-
-  @ApiProperty({
-    example: 16.75,
-  })
-  readonly end: number;
-}
-
-class AnnotationDto {
-  @ApiProperty({
-    example: '1696f02e-d3a8-4084-bc32-b76738afefeb',
-  })
-  readonly id: string;
-
-  @ApiProperty({
-    description: 'Seconds',
-  })
-  readonly span: AnnotationSpanDto;
-
-  @ApiProperty({
-    enum: AnnotationTypeEnum,
-    example: AnnotationTypeEnum.TRANSCRIPT,
-  })
-  readonly type: AnnotationTypeEnum;
-
-  @ApiProperty({
-    example: 'word',
-  })
-  readonly value: Value;
-
-  @ApiPropertyOptional()
-  readonly meta?: any;
-}
+import { AnnotationDto } from './annotation.dto';
 
 class AnnotationTierDto {
   @ApiProperty({

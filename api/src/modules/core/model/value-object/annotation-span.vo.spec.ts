@@ -7,6 +7,7 @@ describe('(unit) AnnotationSpan', () => {
     [1, -5, 1],
     [undefined, undefined, 2],
     [1, 5, 0],
+    [1.5, 3.65, 0],
   ])('should create and validate instance', (start, end, errors) => {
     expect(validateSync(new AnnotationSpan(start, end)).length).toBe(errors);
   });

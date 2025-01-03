@@ -5,6 +5,9 @@ import { AudioFileRepositoryPostgres } from '../infrastructure/audio-file-reposi
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as postgres from 'postgres';
+import { AnnotationOrchestrator } from './annotation-orchestrator';
+import { AnnotationRepositorySymbol } from '../model/repository/annotation.repository';
+import { AnnotationRepositoryPostgres } from '../infrastructure/annotation-repository-postgres.implementation';
 
 @Module({
   imports: [ConfigModule, InfrastructureModule],
@@ -12,6 +15,10 @@ import * as postgres from 'postgres';
     {
       provide: AudioFileRepositorySymbol,
       useExisting: AudioFileRepositoryPostgres,
+    },
+    {
+      provide: AnnotationRepositorySymbol,
+      useExisting: AnnotationRepositoryPostgres,
     },
     {
       provide: 'UPLOAD_DIRECTORY_PATH',
@@ -44,8 +51,10 @@ import * as postgres from 'postgres';
     },
     ConfigService,
     AudioFileRepositoryPostgres,
+    AnnotationRepositoryPostgres,
     AudioFileOrchestrator,
+    AnnotationOrchestrator,
   ],
-  exports: [AudioFileOrchestrator],
+  exports: [AudioFileOrchestrator, AnnotationOrchestrator],
 })
 export class ApplicationModule {}
