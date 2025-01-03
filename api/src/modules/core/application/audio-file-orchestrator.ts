@@ -42,6 +42,10 @@ export class AudioFileOrchestrator {
     return await this.repository.getAll(this.sql);
   }
 
+  async getById(id: string) {
+    return await this.repository.getById(id, this.sql);
+  }
+
   static getFilename(originalname: string, name?: string, extension?: string) {
     return {
       name: name || originalname.split('.')[0],

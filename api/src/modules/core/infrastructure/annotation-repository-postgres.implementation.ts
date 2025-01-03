@@ -63,4 +63,53 @@ export class AnnotationRepositoryPostgres implements AnnotationRepository {
       );
     }
   }
+
+  async getAnnotationsForRecord(
+    file: AudioFile,
+    sql: Sql,
+  ): Promise<Either<UncaughtException, AnnotationAggregate[]>> {
+    try {
+      const annotations = await sql<
+        AnnotationSchema[]
+      >`select id, start_time, end_time, type, value, created_at from annotation where file_id = ${file.id}`;
+
+      if (annotations.length === 0) {
+        return Right([]);
+      }
+
+      const mapped = annotations.map((annotation) => {
+        const agg = new AnnotationAggregate(
+          new Annotation(
+            annotation.id,
+            AnnotationSpanAdapter.fromMiliseconds(
+              annotation.start_time,
+              annotation.end_time,
+            ),
+            new AnnotationType(annotation.type as AnnotationTypeEnum),
+            annotation.type === AnnotationTypeEnum.CONFIDENCE
+              ? Number(annotation.value)
+              : annotation.value,
+          ),
+          file,
+        );
+
+        const validation = validateSync(agg);
+        if (validation.length > 0) {
+          this.logger.log({ validation });
+          throw new InvariantViolationException();
+        }
+
+        return agg;
+      });
+
+      return Right(mapped);
+    } catch (err) {
+      this.logger.warn({ err });
+      return Left(
+        new UncaughtException(
+          `${AnnotationRepositoryPostgres.name} uncaught exception`,
+        ),
+      );
+    }
+  }
 }

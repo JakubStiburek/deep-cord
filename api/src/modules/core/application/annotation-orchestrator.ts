@@ -11,13 +11,12 @@ import {
 } from '../model/repository/audio-file.repository';
 import { AnnotationSpan } from '../model/value-object/annotation-span.vo';
 import { AnnotationType } from '../model/value-object/annotation-type.vo';
-import { Either, Left } from 'purify-ts';
+import { Either, Left, Right } from 'purify-ts';
 import { AnnotationAggregate } from '../model/aggregate/annotation.aggregate';
 import { InvariantViolationException } from '../model/exception/invariant-violation.exception';
 import { UncaughtException } from '../model/exception/uncaught.exception';
 
 export class AnnotationOrchestrator {
-  private readonly logger = new Logger(AnnotationOrchestrator.name);
   constructor(
     @Inject('POSTGRES_CLIENT')
     private readonly sql: Sql,
@@ -30,7 +29,7 @@ export class AnnotationOrchestrator {
   ) {}
 
   async add(fileId: string, dto: CreateAnnotationDto) {
-    const annotationAggregate = await this.sql.begin(async (sql) => {
+    return await this.sql.begin(async (sql) => {
       let result: Either<
         UncaughtException | InvariantViolationException | NotFoundException,
         AnnotationAggregate
@@ -58,7 +57,37 @@ export class AnnotationOrchestrator {
 
       return result;
     });
+  }
 
-    return annotationAggregate;
+  async getAnnotationsForRecord(fileId: string) {
+    return await this.sql.begin(async (sql) => {
+      let result: Either<
+        UncaughtException | InvariantViolationException,
+        AnnotationAggregate[]
+      >;
+      let annotations: AnnotationAggregate[] = [];
+
+      const eitherFile = await this.fileRepository.getById(fileId, sql);
+
+      if (eitherFile.isRight() && eitherFile.extract().isJust()) {
+        const eitherAnnotations =
+          await this.annotationRepository.getAnnotationsForRecord(
+            eitherFile.extract().extract(),
+            sql,
+          );
+
+        if (eitherAnnotations.isRight()) {
+          annotations = eitherAnnotations.extract();
+        }
+
+        result = eitherAnnotations;
+      } else if (eitherFile.isRight() && eitherFile.extract().isNothing()) {
+        result = Left(new NotFoundException());
+      } else if (eitherFile.isLeft()) {
+        result = eitherFile;
+      }
+
+      return Right(annotations);
+    });
   }
 }

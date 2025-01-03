@@ -17,6 +17,11 @@ export interface AnnotationRepository {
   ): Promise<
     Either<UncaughtException | InvariantViolationException, AnnotationAggregate>
   >;
+
+  getAnnotationsForRecord(
+    file: AudioFile,
+    sql: Sql,
+  ): Promise<Either<UncaughtException, AnnotationAggregate[]>>;
 }
 
 export const AnnotationRepositorySymbol = Symbol('AnnotationRepository');

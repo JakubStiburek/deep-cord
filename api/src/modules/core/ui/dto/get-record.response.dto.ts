@@ -1,6 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { FileDto } from './file.dto';
 import { AnnotationDto } from './annotation.dto';
+import { AnnotationTypeEnum } from '../../model/value-object/annotation-type.vo';
 
 class AnnotationTierDto {
   @ApiProperty({
@@ -8,6 +9,9 @@ class AnnotationTierDto {
     type: AnnotationDto,
   })
   readonly annotations: AnnotationDto[];
+
+  @ApiProperty()
+  readonly type: AnnotationTypeEnum;
 }
 
 export class GetRecordResponseDto {
@@ -25,9 +29,19 @@ export class GetRecordResponseDto {
   })
   readonly annotationTiers: AnnotationTierDto[];
 
-  @ApiPropertyOptional({
-    description: 'Optional name for the record',
-    example: 'My first record',
-  })
-  readonly label?: string;
+  constructor(file: FileDto, annotations: AnnotationDto[]) {
+    this.file = file;
+    this.annotationTiers = Object.values(
+      annotations.reduce((acc: AnnotationDto[][], item) => {
+        if (!acc[item.type]) {
+          acc[item.type] = [];
+        }
+        acc[item.type].push(item);
+        return acc;
+      }, []),
+    ).map((annotations) => ({
+      annotations,
+      type: annotations[0].type,
+    }));
+  }
 }

@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AnnotationTypeEnum } from '../../model/value-object/annotation-type.vo';
 import { AnnotationSpanDto } from './annotation-span.dto';
+import { Annotation } from '../../model/entity/annotation.entity';
 
 type Value = string | number;
 
@@ -25,4 +26,16 @@ export class AnnotationDto {
     example: 'word',
   })
   readonly value: Value;
+
+  static fromEntity(entity: Annotation): AnnotationDto {
+    return {
+      id: entity.id,
+      span: {
+        start: entity.span.start,
+        end: entity.span.end,
+      },
+      type: entity.type.type,
+      value: entity.value,
+    };
+  }
 }
