@@ -20,7 +20,7 @@ export function RecordListPage() {
   }, []);
   useEffect(() => {
     fetchFiles();
-  });
+  }, [fetchFiles]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
