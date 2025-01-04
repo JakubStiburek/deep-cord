@@ -13,17 +13,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/modules/common/components/ui/button";
 import { Checkbox } from "@/modules/common/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/modules/common/components/ui/dropdown-menu";
 
@@ -36,12 +34,12 @@ import {
   TableRow,
 } from "@/modules/common/components/ui/table";
 
-const data: File[] = [
-  {
-    id: "m5gr84i9",
-    uri: "./localhost",
-  },
-];
+// const data: File[] = [
+//   {
+//     id: "m5gr84i9",
+//     uri: "./localhost",
+//   },
+// ];
 
 export type File = {
   id: string;
