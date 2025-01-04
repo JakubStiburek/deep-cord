@@ -1,4 +1,4 @@
-import { FileRejection, useDropzone } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import { useState, useCallback, useEffect } from "react";
 
 import axios from "axios";
@@ -6,7 +6,7 @@ import axios from "axios";
 import { UploadsTable } from "@/modules/record/components/uploads-table";
 
 export function RecordListPage() {
-  const [files, setFiles] = useState<any>([]);
+  const [files, setFiles] = useState([]);
 
   const fetchFiles = useCallback(async () => {
     try {
@@ -20,14 +20,11 @@ export function RecordListPage() {
     fetchFiles();
   });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      acceptedFiles.forEach((file: File) => {
-        setSelectedFiles((prevState) => [...prevState, file]);
-      });
-    },
-    []
-  );
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach((file: File) => {
+      setSelectedFiles((prevState) => [...prevState, file]);
+    });
+  }, []);
 
   const [uploadStatus, setUploadStatus] = useState("");
 
