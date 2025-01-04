@@ -5,12 +5,14 @@ import axios from "axios";
 
 import { UploadsTable } from "@/modules/record/components/uploads-table";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function RecordListPage() {
   const [files, setFiles] = useState([]);
 
   const fetchFiles = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/audio/files`);
+      const response = await axios.get(`${API_URL}/api/audio/files`);
       setFiles(response.data.files);
     } catch (error) {
       console.log(error);
@@ -45,7 +47,7 @@ export function RecordListPage() {
     });
 
     try {
-      const response = await axios.post(`/api/audio/files`, formData);
+      const response = await axios.post(`${API_URL}/api/audio/files`, formData);
       console.log(response.data);
       fetchFiles();
       setUploadStatus("upload successful");
