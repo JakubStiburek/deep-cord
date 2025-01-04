@@ -4,29 +4,33 @@ import "./index.css";
 
 import App from "./App.tsx";
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== "development") {
-    return;
-  }
+// async function enableMocking() {
+//   if (process.env.NODE_ENV !== "development") {
+//     return;
+//   }
 
-  // @ts-expect-error Ignored
-  const { worker } = await import("./mocks/browser.js");
+//   const { worker } = await import("./mocks/browser.ts");
 
-  return await worker.start({
-    onUnhandledRequest: "bypass",
-    serviceWorker: {
-      url: "/mockServiceWorker.js",
-      options: {
-        scope: "/api",
-      },
-    },
-  });
-}
+//   // `worker.start()` returns a Promise that resolves
+//   // once the Service Worker is up and ready to intercept requests.
+//   return worker.start({
+//     onUnhandledRequest: (l, i) => {
+//       console.log(l);
 
-enableMocking().then(() => {
-  createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  );
-});
+//       return;
+//     }, // Neinterferujte s požadavky, které nejsou mockované
+//     serviceWorker: {
+//       url: "/mockServiceWorker.js",
+//       options: {
+//         scope: "/",
+//       },
+//     },
+//   });
+// }
+// enableMocking().then(() => {
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+// });
