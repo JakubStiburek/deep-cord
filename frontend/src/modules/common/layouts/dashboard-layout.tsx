@@ -4,13 +4,12 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/modules/common/components/ui/sidebar";
-import { Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
 import { Separator } from "@/modules/common/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/modules/common/components/ui/breadcrumb";
@@ -27,7 +26,7 @@ export function DashboardLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+                  <NavLink to={"/"}>Dashboard</NavLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -39,9 +38,7 @@ export function DashboardLayout() {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3"></div> */}
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-2">
-            <Outlet />
-          </div>
+          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>

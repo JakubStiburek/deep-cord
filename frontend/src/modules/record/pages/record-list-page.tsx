@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 
 import { UploadsTable } from "@/modules/record/components/uploads-table";
+import { DashboardPaper } from "@/modules/common/layouts/dashboard-paper";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +14,7 @@ export function RecordListPage() {
   const fetchFiles = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/api/audio/files`);
+
       setFiles(response.data.files);
     } catch (error) {
       console.log(error);
@@ -57,7 +59,7 @@ export function RecordListPage() {
     }
   };
   return (
-    <div>
+    <DashboardPaper>
       <div
         className={
           "border-primary-500 rounded-md border-[1px] h-60 flex justify-center items-center"
@@ -78,6 +80,6 @@ export function RecordListPage() {
         </div>
       )}
       <UploadsTable data={files} />
-    </div>
+    </DashboardPaper>
   );
 }
