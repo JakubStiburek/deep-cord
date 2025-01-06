@@ -1,14 +1,15 @@
-name: Database Migration
+name: Deployment
 
 on:
   workflow_run:
-    workflows: ["API-CI"] # Triggered when API-CI workflow completes
+    workflows: ["CI"]
     types:
       - completed
-  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch:
 
 jobs:
   migrate:
+    name: Migrate Production Database
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
@@ -39,3 +40,12 @@ jobs:
         env:
           NEON_CONNECTION_URL: ${{ secrets.NEON_CONNECTION_URL }}
         run: pnpm run db:prod:migrate
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Trigger Deploy Webhook
+        run: curl "https://api.render.com/deploy/srv-ctqkmsbqf0us73estr6g?key=${{ secrets.RENDER_API_KEY }}"
