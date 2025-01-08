@@ -4,6 +4,7 @@ import { DataSet } from "vis-data";
 import { DateTime } from "luxon";
 
 import { Record } from "../../record/types";
+import { DashboardPaper } from "@/modules/common/layouts/dashboard-paper";
 
 const secondsToDate = (seconds: number, baseDate = "2014-04-20T00:00:00Z") => {
   const base = DateTime.fromISO(baseDate, { zone: "utc" }) // Výchozí UTC čas
@@ -100,7 +101,7 @@ export function RecordDetailPage() {
   //   }, []);
 
   return (
-    <div className="p-2">
+    <DashboardPaper>
       <h2 className="text-xl">Label: {mockRecord.label}</h2>
       <h3 className="text-md text-muted-foreground">
         URI: {mockRecord.file.uri}
@@ -108,6 +109,6 @@ export function RecordDetailPage() {
       <div className="flex flex-col p-4 gap-4">
         <VisTimeline />
       </div>
-    </div>
+    </DashboardPaper>
   );
 }

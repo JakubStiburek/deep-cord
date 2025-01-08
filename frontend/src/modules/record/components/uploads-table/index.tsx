@@ -33,13 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/modules/common/components/ui/table";
-
-// const data: File[] = [
-//   {
-//     id: "m5gr84i9",
-//     uri: "./localhost",
-//   },
-// ];
+import { Link } from "react-router";
 
 export type File = {
   id: string;
@@ -72,7 +66,11 @@ export const columns: ColumnDef<File>[] = [
   {
     accessorKey: "uri",
     header: "URI",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("uri")}</div>,
+    cell: ({ row }) => (
+      <Link to={`/records/${row.original.id}`}>
+        <div className="capitalize hover:underline">{row.getValue("uri")}</div>
+      </Link>
+    ),
   },
   {
     id: "actions",
@@ -132,42 +130,7 @@ export function UploadsTable({ data = [] }: { data: File[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center pb-4">
-        {/* <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      </div>
+      <div className="flex items-center pb-4"></div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

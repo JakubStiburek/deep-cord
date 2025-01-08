@@ -1,11 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Frame, Map, PieChart, Settings2, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/modules/common/components/app-sidebar/partials/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
-// import { NavUser } from "@/components/nav-user";
 
 import {
   Sidebar,
@@ -15,113 +12,17 @@ import {
   SidebarRail,
 } from "@/modules/common/components/ui/sidebar";
 import { ModeToggle } from "../theme-toggle";
-
-// This is sample data.
-const data = {
-  //   user: {
-  //     name: "shadcn",
-  //     email: "m@example.com",
-  //     avatar: "/avatars/shadcn.jpg",
-  //   },
-  navMain: [
-    {
-      title: "Records",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Uploads",
-          url: "#",
-        },
-      ],
-    },
-    // {
-    //   title: "Models",
-    //   url: "#",
-    //   icon: Bot,
-    //   items: [
-    //     {
-    //       title: "Genesis",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Explorer",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Quantum",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "Documentation",
-    //   url: "#",
-    //   icon: BookOpen,
-    //   items: [
-    //     {
-    //       title: "Introduction",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Get Started",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Tutorials",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Changelog",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-};
+import { SidebarLogo } from "./partials/sidebar-logo";
+import { navItems } from "@/router/nav-items";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <span className="text text-xs">DeepCord</span>
+        <SidebarLogo />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
         {/* <NavUser user={data.user} /> */}
