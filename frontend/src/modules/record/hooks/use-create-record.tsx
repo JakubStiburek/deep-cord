@@ -22,7 +22,7 @@ export function useCreateRecord({ onSuccess }: { onSuccess: () => void }) {
     },
     onSuccess: ({ toastId }) => {
       toast.dismiss(toastId);
-      queryClient.invalidateQueries({ queryKey: ["rates"] });
+      queryClient.invalidateQueries({ queryKey: ["records"] });
 
       onSuccess();
       toast.success("New record created");
