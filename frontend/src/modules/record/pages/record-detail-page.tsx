@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Timeline } from "vis-timeline";
-// @ts-expect-error Unknow TS error
-import { DataSet } from "vis-data";
+import vis from "vis-data";
 import { DateTime } from "luxon";
 
 import { Record } from "../../record/types";
@@ -54,7 +53,7 @@ const toTimelineFormat = (
   }));
 };
 
-const items = new DataSet(
+const items = new vis.DataSet(
   toTimelineFormat(mockRecord.annotationTiers[0].annotations)
 );
 
