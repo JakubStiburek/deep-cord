@@ -8,6 +8,8 @@ import {
   UploadedFile,
   UseInterceptors,
   Body,
+  ParseUUIDPipe,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -21,12 +23,16 @@ import { AudioFileOrchestrator } from '../../application/audio-file-orchestrator
 import { NotUniqueException } from '../../model/exception/not-unique.exception';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 import { UploadFileDto } from '../dto/upload-file.dto';
+import { TranscriptService } from '../../application/transcript.service';
 
 @ApiTags('files')
 @Controller('api/audio/files')
 export class FilesController {
   private readonly logger = new Logger(FilesController.name);
-  constructor(private readonly audioFileOrchestrator: AudioFileOrchestrator) {}
+  constructor(
+    private readonly audioFileOrchestrator: AudioFileOrchestrator,
+    private readonly transcriptService: TranscriptService,
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -74,5 +80,10 @@ export class FilesController {
         );
       })
       .extract();
+  }
+
+  @Post(':id/transcriptions')
+  async transcribeFile(@Param('id', ParseUUIDPipe) id: string) {
+    await this.transcriptService.transcribe(id);
   }
 }

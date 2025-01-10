@@ -7,4 +7,7 @@ export default () => ({
     pg_user: process.env.PG_USER,
     pg_password: process.env.PG_PASSWORD,
   },
+  deepgram: {
+    apiKey: process.env.DEEPGRAM_API_KEY,
+  },
 });

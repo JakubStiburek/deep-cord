@@ -8,6 +8,7 @@ import * as postgres from 'postgres';
 import { AnnotationOrchestrator } from './annotation-orchestrator';
 import { AnnotationRepositorySymbol } from '../model/repository/annotation.repository';
 import { AnnotationRepositoryPostgres } from '../infrastructure/annotation-repository-postgres.implementation';
+import { TranscriptService } from './transcript.service';
 
 @Module({
   imports: [ConfigModule, InfrastructureModule],
@@ -49,12 +50,20 @@ import { AnnotationRepositoryPostgres } from '../infrastructure/annotation-repos
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'DEEPGRAM_API_KEY',
+      useFactory: (configService: ConfigService) => {
+        return configService.get('deepgram.apiKey');
+      },
+      inject: [ConfigService],
+    },
     ConfigService,
     AudioFileRepositoryPostgres,
     AnnotationRepositoryPostgres,
     AudioFileOrchestrator,
     AnnotationOrchestrator,
+    TranscriptService,
   ],
-  exports: [AudioFileOrchestrator, AnnotationOrchestrator],
+  exports: [AudioFileOrchestrator, AnnotationOrchestrator, TranscriptService],
 })
 export class ApplicationModule {}

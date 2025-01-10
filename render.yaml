@@ -19,6 +19,8 @@ services:
         sync: false
       - key: NODE_ENV
         sync: false
+      - key: DEEPGRAM_API_KEY
+        sync: false
     region: frankfurt
     dockerContext: .
     dockerfilePath: ./Dockerfile
