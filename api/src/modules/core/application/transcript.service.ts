@@ -7,6 +7,7 @@ import {
   AudioFileRepositorySymbol,
   AudioFileRepository,
 } from '../model/repository/audio-file.repository';
+import { error } from 'console';
 
 export class TranscriptService {
   constructor(
@@ -33,13 +34,10 @@ export class TranscriptService {
   async transcribe(id: string) {
     const file = await this.repository.getById(id, this.sql);
 
-    if (file.isRight() && file.extract().isJust()) {
-      const transcript = await this.transcribeLocalFile(
-        file.extract().extract(),
-      );
-      console.log(transcript);
-    } else {
-      throw new NotFoundException();
+    if (file instanceof Error) {
+      return file;
     }
+
+    return await this.transcribeLocalFile(file);
   }
 }

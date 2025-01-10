@@ -4,7 +4,6 @@ import { AudioFile } from '../entity/audio-file.entity';
 import { UncaughtException } from '../exception/uncaught.exception';
 import { AnnotationSpan } from '../value-object/annotation-span.vo';
 import { AnnotationType } from '../value-object/annotation-type.vo';
-import { Either } from 'purify-ts';
 import { InvariantViolationException } from '../exception/invariant-violation.exception';
 
 export interface AnnotationRepository {
@@ -15,13 +14,13 @@ export interface AnnotationRepository {
     value: string | number,
     sql: Sql,
   ): Promise<
-    Either<UncaughtException | InvariantViolationException, AnnotationAggregate>
+    AnnotationAggregate | UncaughtException | InvariantViolationException
   >;
 
   getAnnotationsForRecord(
     file: AudioFile,
     sql: Sql,
-  ): Promise<Either<UncaughtException, AnnotationAggregate[]>>;
+  ): Promise<AnnotationAggregate[] | UncaughtException>;
 }
 
 export const AnnotationRepositorySymbol = Symbol('AnnotationRepository');

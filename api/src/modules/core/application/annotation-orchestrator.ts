@@ -1,4 +1,4 @@
-import { Inject, Logger, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { Sql } from 'postgres';
 import {
   AnnotationRepository,
@@ -11,10 +11,6 @@ import {
 } from '../model/repository/audio-file.repository';
 import { AnnotationSpan } from '../model/value-object/annotation-span.vo';
 import { AnnotationType } from '../model/value-object/annotation-type.vo';
-import { Either, Left, Right } from 'purify-ts';
-import { AnnotationAggregate } from '../model/aggregate/annotation.aggregate';
-import { InvariantViolationException } from '../model/exception/invariant-violation.exception';
-import { UncaughtException } from '../model/exception/uncaught.exception';
 
 export class AnnotationOrchestrator {
   constructor(
@@ -30,64 +26,31 @@ export class AnnotationOrchestrator {
 
   async add(fileId: string, dto: CreateAnnotationDto) {
     return await this.sql.begin(async (sql) => {
-      let result: Either<
-        UncaughtException | InvariantViolationException | NotFoundException,
-        AnnotationAggregate
-      >;
+      const file = await this.fileRepository.getById(fileId, sql);
 
-      const eitherFile = await this.fileRepository.getById(fileId, sql);
-
-      if (eitherFile.isRight() && eitherFile.extract().isJust()) {
-        result = await this.annotationRepository.add(
-          eitherFile.extract().extract(),
-          new AnnotationSpan(dto.span.start, dto.span.end),
-          new AnnotationType(dto.type),
-          dto.value,
-          sql,
-        );
-      } else if (eitherFile.isRight() && eitherFile.extract().isNothing()) {
-        result = Left(new NotFoundException());
-      } else if (eitherFile.isLeft()) {
-        result = eitherFile;
+      if (file instanceof Error) {
+        return file;
       }
 
-      if (result.isLeft()) {
-        throw result.extract();
-      }
-
-      return result;
+      return await this.annotationRepository.add(
+        file,
+        new AnnotationSpan(dto.span.start, dto.span.end),
+        new AnnotationType(dto.type),
+        dto.value,
+        sql,
+      );
     });
   }
 
   async getAnnotationsForRecord(fileId: string) {
     return await this.sql.begin(async (sql) => {
-      let result: Either<
-        UncaughtException | InvariantViolationException,
-        AnnotationAggregate[]
-      >;
-      let annotations: AnnotationAggregate[] = [];
+      const file = await this.fileRepository.getById(fileId, sql);
 
-      const eitherFile = await this.fileRepository.getById(fileId, sql);
-
-      if (eitherFile.isRight() && eitherFile.extract().isJust()) {
-        const eitherAnnotations =
-          await this.annotationRepository.getAnnotationsForRecord(
-            eitherFile.extract().extract(),
-            sql,
-          );
-
-        if (eitherAnnotations.isRight()) {
-          annotations = eitherAnnotations.extract();
-        }
-
-        result = eitherAnnotations;
-      } else if (eitherFile.isRight() && eitherFile.extract().isNothing()) {
-        result = Left(new NotFoundException());
-      } else if (eitherFile.isLeft()) {
-        result = eitherFile;
+      if (file instanceof Error) {
+        return file;
       }
 
-      return Right(annotations);
+      return await this.annotationRepository.getAnnotationsForRecord(file, sql);
     });
   }
 }

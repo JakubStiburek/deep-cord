@@ -1,8 +1,8 @@
 import { Sql } from 'postgres';
-import { Either, Maybe } from 'purify-ts';
 import { AudioFile } from '../entity/audio-file.entity';
 import { UncaughtException } from '../exception/uncaught.exception';
 import { NotUniqueException } from '../exception/not-unique.exception';
+import { FileNotFoundException } from '../exception/file-not-found.exception';
 
 export interface AudioFileRepository {
   add(
@@ -16,7 +16,7 @@ export interface AudioFileRepository {
   getById(
     id: string,
     sql: Sql,
-  ): Promise<Either<UncaughtException, Maybe<AudioFile>>>;
+  ): Promise<AudioFile | UncaughtException | FileNotFoundException>;
 }
 
 export const AudioFileRepositorySymbol = Symbol('AudioFileRepository');

@@ -24,7 +24,7 @@ export class AnnotationRepositoryPostgres implements AnnotationRepository {
     type: AnnotationType,
     value: string | number,
     sql: Sql,
-  ): Promise<Either<UncaughtException, AnnotationAggregate>> {
+  ) {
     try {
       const { startTime, endTime } =
         AnnotationSpanAdapter.fromAnnotationSpan(span);
@@ -50,31 +50,26 @@ export class AnnotationRepositoryPostgres implements AnnotationRepository {
 
       if (validateSync(aggregate).length > 0) {
         this.logger.log({ validation: validateSync(aggregate) });
-        return Left(new InvariantViolationException());
+        return new InvariantViolationException();
       }
 
-      return Right(aggregate);
+      return aggregate;
     } catch (err) {
       this.logger.warn({ err });
-      return Left(
-        new UncaughtException(
-          `${AnnotationRepositoryPostgres.name} uncaught exception`,
-        ),
+      return new UncaughtException(
+        `${AnnotationRepositoryPostgres.name} uncaught exception`,
       );
     }
   }
 
-  async getAnnotationsForRecord(
-    file: AudioFile,
-    sql: Sql,
-  ): Promise<Either<UncaughtException, AnnotationAggregate[]>> {
+  async getAnnotationsForRecord(file: AudioFile, sql: Sql) {
     try {
       const annotations = await sql<
         AnnotationSchema[]
       >`select id, start_time, end_time, type, value, created_at from annotation where file_id = ${file.id}`;
 
       if (annotations.length === 0) {
-        return Right([]);
+        return [];
       }
 
       const mapped = annotations.map((annotation) => {
@@ -102,13 +97,11 @@ export class AnnotationRepositoryPostgres implements AnnotationRepository {
         return agg;
       });
 
-      return Right(mapped);
+      return mapped;
     } catch (err) {
       this.logger.warn({ err });
-      return Left(
-        new UncaughtException(
-          `${AnnotationRepositoryPostgres.name} uncaught exception`,
-        ),
+      return new UncaughtException(
+        `${AnnotationRepositoryPostgres.name} uncaught exception`,
       );
     }
   }
