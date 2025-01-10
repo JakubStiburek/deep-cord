@@ -56,16 +56,18 @@ export interface File {
   uri: string;
   name: string;
   created_at: Date;
+  transcribed: boolean;
 }
 export interface FileInput {
   id?: string;
   uri: string;
   name: string;
   created_at?: Date;
+  transcribed?: boolean;
 }
 const file = {
   tableName: 'file',
-  columns: ['id', 'uri', 'name', 'created_at'],
+  columns: ['id', 'uri', 'name', 'created_at', 'transcribed'],
   requiredForInsert: ['uri', 'name'],
   primaryKey: 'id',
   foreignKeys: {},

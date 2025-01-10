@@ -38,12 +38,13 @@ export class RecordController {
       name,
       uri,
       createdAt,
+      transcribed,
     } = this.catchError<AudioFile>(
       await this.audioFileOrchestrator.getById(id),
     );
 
     return new GetRecordResponseDto(
-      new FileDto(fileId, name, uri, createdAt),
+      new FileDto(fileId, name, uri, createdAt, transcribed),
       annotations.map((annotation) =>
         AnnotationDto.fromEntity(annotation.annotation),
       ),

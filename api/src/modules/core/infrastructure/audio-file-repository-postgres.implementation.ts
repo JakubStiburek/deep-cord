@@ -22,6 +22,7 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
         file.name,
         file.uri,
         DateTime.fromJSDate(file.created_at),
+        file.transcribed,
       );
     } catch (err) {
       if (
@@ -42,15 +43,21 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
     try {
       const files = await sql<
         File[]
-      >`select id, name, uri, created_at from file;`;
+      >`select id, name, uri, created_at, transcribed from file;`;
 
       if (files.length === 0) {
         return [];
       }
 
       return files.map(
-        ({ id, name, uri, created_at }) =>
-          new AudioFile(id, name, uri, DateTime.fromJSDate(created_at)),
+        ({ id, name, uri, created_at, transcribed }) =>
+          new AudioFile(
+            id,
+            name,
+            uri,
+            DateTime.fromJSDate(created_at),
+            transcribed,
+          ),
       );
     } catch (err) {
       this.logger.warn({ err });
@@ -64,7 +71,7 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
     try {
       const [file] = await sql<
         File[]
-      >`select id, name, uri, created_at from file where id = ${id}`;
+      >`select id, name, uri, created_at, transcribed from file where id = ${id}`;
 
       if (!file) {
         return new FileNotFoundException();
@@ -75,7 +82,21 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
         file.name,
         file.uri,
         DateTime.fromJSDate(file.created_at),
+        file.transcribed,
       );
+    } catch (err) {
+      this.logger.warn({ err });
+      return new UncaughtException(
+        'AudioFileRepositoryPostgres uncaught exception',
+      );
+    }
+  }
+
+  async update(file: AudioFile, sql: Sql) {
+    try {
+      await sql`update file set ${sql({ id: file.id, name: file.name, uri: file.uri, created_at: file.createdAt, transcribed: file.transcribed })}`;
+
+      return file;
     } catch (err) {
       this.logger.warn({ err });
       return new UncaughtException(

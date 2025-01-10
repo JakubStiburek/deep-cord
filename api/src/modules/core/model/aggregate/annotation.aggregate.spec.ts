@@ -15,6 +15,7 @@ describe('(unit) AnnotationAggregate', () => {
       'file-name',
       './uploads/file-name-2000-01-01.mp3',
       DateTime.now(),
+      true,
     );
     const aggregate = new AnnotationAggregate(annotation, file);
     expect(validateSync(aggregate).length).toBe(0);

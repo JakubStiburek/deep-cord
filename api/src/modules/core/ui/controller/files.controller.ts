@@ -46,11 +46,12 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadFileDto,
   ) {
-    const { id, name, uri, createdAt } = this.catchError<AudioFile>(
-      await this.audioFileOrchestrator.add(file, body),
-    );
+    const { id, name, uri, createdAt, transcribed } =
+      this.catchError<AudioFile>(
+        await this.audioFileOrchestrator.add(file, body),
+      );
 
-    return new FileDto(id, name, uri, createdAt);
+    return new FileDto(id, name, uri, createdAt, transcribed);
   }
 
   @Get()
@@ -65,7 +66,14 @@ export class FilesController {
 
     return new ListUploadedFilesResponseDto(
       result.map(
-        (file) => new FileDto(file.id, file.name, file.uri, file.createdAt),
+        (file) =>
+          new FileDto(
+            file.id,
+            file.name,
+            file.uri,
+            file.createdAt,
+            file.transcribed,
+          ),
       ),
     );
   }

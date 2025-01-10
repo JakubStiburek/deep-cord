@@ -29,9 +29,22 @@ describe('(unit) File', () => {
   ])(
     'should create and validate instance',
     ({ id, name, uri, createdAt, errors }) => {
-      expect(validateSync(new AudioFile(id, name, uri, createdAt)).length).toBe(
-        errors,
-      );
+      expect(
+        validateSync(new AudioFile(id, name, uri, createdAt, false)).length,
+      ).toBe(errors);
     },
   );
+
+  it('should update file to transcribed', () => {
+    const file = new AudioFile(
+      uuid(),
+      'name',
+      './uploads/name',
+      DateTime.now(),
+      false,
+    );
+    expect(file.transcribed).toBeFalsy();
+    file.transcribe();
+    expect(file.transcribed).toBeTruthy();
+  });
 });

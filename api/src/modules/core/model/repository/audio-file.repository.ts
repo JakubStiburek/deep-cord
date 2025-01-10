@@ -17,6 +17,8 @@ export interface AudioFileRepository {
     id: string,
     sql: Sql,
   ): Promise<AudioFile | UncaughtException | FileNotFoundException>;
+
+  update(file: AudioFile, sql: Sql): Promise<AudioFile | UncaughtException>;
 }
 
 export const AudioFileRepositorySymbol = Symbol('AudioFileRepository');

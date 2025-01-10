@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsString, IsUUID, Validate } from 'class-validator';
+import {
+  IsBoolean,
+  IsJSON,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  Validate,
+} from 'class-validator';
 import { DateTime } from 'luxon';
 import { Valid } from 'luxon/src/_util';
 import { IsValidDateTime } from './validation/is-valid-datetime.validator';
@@ -18,10 +25,24 @@ export class AudioFile {
   @Validate(IsValidDateTime)
   readonly createdAt: DateTime<Valid>;
 
-  constructor(id: string, name: string, uri: string, createdAt: DateTime) {
+  @IsBoolean()
+  transcribed: boolean;
+
+  constructor(
+    id: string,
+    name: string,
+    uri: string,
+    createdAt: DateTime,
+    transcribed: boolean,
+  ) {
     this.id = id;
     this.name = name;
     this.uri = uri;
     this.createdAt = createdAt;
+    this.transcribed = transcribed;
+  }
+
+  transcribe() {
+    this.transcribed = true;
   }
 }

@@ -23,15 +23,20 @@ export class FileDto {
   })
   readonly createdAt: string;
 
+  @ApiProperty()
+  readonly transcribed: boolean;
+
   constructor(
     id: string,
     name: string,
     uri: string,
     createdAt: DateTime<Valid>,
+    transcribed: boolean,
   ) {
     this.id = id;
     this.uri = uri;
     this.name = name;
     this.createdAt = createdAt.toISO();
+    this.transcribed = transcribed;
   }
 }

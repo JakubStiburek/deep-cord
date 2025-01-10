@@ -68,7 +68,7 @@ describe('(endpoint) FilesController', () => {
       jest
         .spyOn(audioFileOrchestrator, 'add')
         .mockResolvedValueOnce(
-          new AudioFile('id', 'name', 'uri', DateTime.now()),
+          new AudioFile('id', 'name', 'uri', DateTime.now(), false),
         );
 
       return request(httpServer)
@@ -129,7 +129,7 @@ describe('(endpoint) FilesController', () => {
       jest
         .spyOn(audioFileOrchestrator, 'getAll')
         .mockResolvedValueOnce([
-          new AudioFile('id', 'audio-sample', 'uri', DateTime.now()),
+          new AudioFile('id', 'audio-sample', 'uri', DateTime.now(), false),
         ]);
 
       return request(httpServer)
@@ -143,6 +143,7 @@ describe('(endpoint) FilesController', () => {
                 name: 'audio-sample',
                 uri: expect.any(String),
                 createdAt: expect.any(String),
+                transcribed: false,
               },
             ],
           });

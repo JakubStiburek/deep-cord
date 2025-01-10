@@ -24,7 +24,7 @@ export class TranscriptService {
     @Inject('POSTGRES_CLIENT')
     private readonly sql: Sql,
     @Inject(AudioFileRepositorySymbol)
-    private readonly repository: AudioFileRepository,
+    private readonly fileRepository: AudioFileRepository,
     @Inject(AnnotationRepositorySymbol)
     private readonly annotationRepository: AnnotationRepository,
   ) {}
@@ -43,28 +43,49 @@ export class TranscriptService {
 
   async transcribe(id: string) {
     return this.sql.begin(async (sql) => {
-      const file = await this.repository.getById(id, this.sql);
+      const file = await this.fileRepository.getById(id, this.sql);
 
       if (file instanceof Error) {
         return file;
       }
 
+      if (file.transcribed) {
+        return;
+      }
+
       const transcription = await this.transcribeLocalFile(file);
       const words = transcription.results.channels[0].alternatives[0].words;
-      const result = await Promise.all(
-        words.map((word) =>
-          this.annotationRepository.add(
-            file,
-            new AnnotationSpan(word.start, word.end),
-            new AnnotationType(AnnotationTypeEnum.TRANSCRIPT),
-            word.word,
-            sql,
-          ),
-        ),
+      const transcriptBatch = words.map((word) => {
+        return {
+          span: new AnnotationSpan(word.start, word.end),
+          type: new AnnotationType(AnnotationTypeEnum.TRANSCRIPT),
+          value: word.word,
+        };
+      });
+      const confidenceBatch = words.map((word) => {
+        return {
+          span: new AnnotationSpan(word.start, word.end),
+          type: new AnnotationType(AnnotationTypeEnum.CONFIDENCE),
+          value: word.confidence,
+        };
+      });
+
+      const result = await this.annotationRepository.addBatch(
+        file,
+        [...transcriptBatch, ...confidenceBatch],
+        sql,
       );
 
-      if (result[0] instanceof Error) {
-        throw result[0];
+      if (result instanceof Error) {
+        throw result;
+      }
+
+      file.transcribe();
+
+      const fileUpdateResult = await this.fileRepository.update(file, sql);
+
+      if (fileUpdateResult instanceof Error) {
+        throw fileUpdateResult;
       }
     });
   }

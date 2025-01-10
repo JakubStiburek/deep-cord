@@ -1,0 +1,2 @@
+ALTER TABLE file 
+ADD COLUMN transcribed BOOLEAN NOT NULL DEFAULT false;
