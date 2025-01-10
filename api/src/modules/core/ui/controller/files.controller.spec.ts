@@ -28,6 +28,7 @@ describe('(endpoint) FilesController', () => {
             getAll: jest.fn(),
           };
         }
+        return {};
       })
       .compile();
 
