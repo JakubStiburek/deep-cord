@@ -16,14 +16,14 @@ describe('(unit) AnnotationSpanAdapter', () => {
     );
   });
 
-  it('should convert AnnotationSpan to miliseconds with max 3 decimals precision', () => {
+  it('should convert AnnotationSpan to miliseconds rounding up decimals', () => {
     expect(
       AnnotationSpanAdapter.fromAnnotationSpan(
         new AnnotationSpan(0.1234561, 100.1234561),
       ),
     ).toStrictEqual({
-      startTime: 123.456,
-      endTime: 100123.456,
+      startTime: 123,
+      endTime: 100123,
     });
   });
 

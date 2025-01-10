@@ -17,6 +17,16 @@ export interface AnnotationRepository {
     AnnotationAggregate | UncaughtException | InvariantViolationException
   >;
 
+  addBatch(
+    file: AudioFile,
+    annotations: {
+      span: AnnotationSpan;
+      type: AnnotationType;
+      value: string | number;
+    }[],
+    sql: Sql,
+  ): Promise<void | UncaughtException | InvariantViolationException>;
+
   getAnnotationsForRecord(
     file: AudioFile,
     sql: Sql,

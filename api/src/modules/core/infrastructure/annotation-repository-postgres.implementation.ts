@@ -104,4 +104,37 @@ export class AnnotationRepositoryPostgres implements AnnotationRepository {
       );
     }
   }
+
+  async addBatch(
+    file: AudioFile,
+    annotations: {
+      span: AnnotationSpan;
+      type: AnnotationType;
+      value: string | number;
+    }[],
+    sql: Sql,
+  ): Promise<void | UncaughtException | InvariantViolationException> {
+    try {
+      const adapted = annotations.map((annotation) => {
+        const { startTime, endTime } = AnnotationSpanAdapter.fromAnnotationSpan(
+          annotation.span,
+        );
+
+        return {
+          start_time: startTime,
+          end_time: endTime,
+          type: annotation.type.type,
+          value: annotation.value,
+          file_id: file.id,
+        };
+      });
+
+      await sql`insert into annotation ${sql(adapted)}`;
+    } catch (err) {
+      this.logger.warn({ err });
+      return new UncaughtException(
+        `${AnnotationRepositoryPostgres.name} uncaught exception`,
+      );
+    }
+  }
 }

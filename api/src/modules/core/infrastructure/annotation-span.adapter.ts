@@ -3,8 +3,8 @@ import { AnnotationSpan } from '../model/value-object/annotation-span.vo';
 export class AnnotationSpanAdapter {
   static fromAnnotationSpan(span: AnnotationSpan) {
     return {
-      startTime: Number((span.start * 1000).toFixed(3)),
-      endTime: Number((span.end * 1000).toFixed(3)),
+      startTime: Math.floor(Number(span.start * 1000)),
+      endTime: Math.floor(Number(span.end * 1000)),
     };
   }
 
