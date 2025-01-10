@@ -38,26 +38,24 @@ export class AudioFileRepositoryPostgres implements AudioFileRepository {
     }
   }
 
-  async getAll(sql: Sql): Promise<Either<UncaughtException, AudioFile[]>> {
+  async getAll(sql: Sql) {
     try {
       const files = await sql<
         File[]
       >`select id, name, uri, created_at from file;`;
 
       if (files.length === 0) {
-        return Right([]);
+        return [];
       }
 
-      return Right(
-        files.map(
-          ({ id, name, uri, created_at }) =>
-            new AudioFile(id, name, uri, DateTime.fromJSDate(created_at)),
-        ),
+      return files.map(
+        ({ id, name, uri, created_at }) =>
+          new AudioFile(id, name, uri, DateTime.fromJSDate(created_at)),
       );
     } catch (err) {
       this.logger.warn({ err });
-      return Left(
-        new UncaughtException('AudioFileRepositoryPostgres uncaught exception'),
+      return new UncaughtException(
+        'AudioFileRepositoryPostgres uncaught exception',
       );
     }
   }

@@ -24,6 +24,7 @@ import { NotUniqueException } from '../../model/exception/not-unique.exception';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 import { UploadFileDto } from '../dto/upload-file.dto';
 import { TranscriptService } from '../../application/transcript.service';
+import { AudioFile } from '../../model/entity/audio-file.entity';
 
 @ApiTags('files')
 @Controller('api/audio/files')
@@ -45,7 +46,7 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadFileDto,
   ) {
-    const { id, name, uri, createdAt } = this.catchError(
+    const { id, name, uri, createdAt } = this.catchError<AudioFile>(
       await this.audioFileOrchestrator.add(file, body),
     );
 
@@ -58,20 +59,15 @@ export class FilesController {
   })
   @ApiOkResponse({ type: ListUploadedFilesResponseDto })
   async listUploadedFiles() {
-    const result = await this.audioFileOrchestrator.getAll();
+    const result = this.catchError<AudioFile[]>(
+      await this.audioFileOrchestrator.getAll(),
+    );
 
-    return result
-      .mapLeft((err) => {
-        throw new InternalServerErrorException();
-      })
-      .map((files) => {
-        return new ListUploadedFilesResponseDto(
-          files.map(
-            (file) => new FileDto(file.id, file.name, file.uri, file.createdAt),
-          ),
-        );
-      })
-      .extract();
+    return new ListUploadedFilesResponseDto(
+      result.map(
+        (file) => new FileDto(file.id, file.name, file.uri, file.createdAt),
+      ),
+    );
   }
 
   @Post(':id/transcriptions')
@@ -79,7 +75,7 @@ export class FilesController {
     await this.transcriptService.transcribe(id);
   }
 
-  private catchError(value: any) {
+  private catchError<T>(value: any) {
     if (value instanceof NotUniqueException) {
       throw new ConflictException();
     }
@@ -88,6 +84,6 @@ export class FilesController {
       throw new InternalServerErrorException();
     }
 
-    return value;
+    return value as T;
   }
 }

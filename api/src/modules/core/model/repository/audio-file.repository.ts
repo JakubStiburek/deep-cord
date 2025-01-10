@@ -11,7 +11,7 @@ export interface AudioFileRepository {
     sql: Sql,
   ): Promise<AudioFile | UncaughtException | NotUniqueException>;
 
-  getAll(sql: Sql): Promise<Either<UncaughtException, AudioFile[]>>;
+  getAll(sql: Sql): Promise<AudioFile[] | UncaughtException>;
 
   getById(
     id: string,

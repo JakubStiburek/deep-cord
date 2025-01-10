@@ -114,9 +114,7 @@ describe('(endpoint) FilesController', () => {
 
   describe('GET api/audio/files', () => {
     it('should return empty array if no files are found', async () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce(Right([]));
+      jest.spyOn(audioFileOrchestrator, 'getAll').mockResolvedValueOnce([]);
 
       return request(httpServer)
         .get(path)
@@ -131,9 +129,9 @@ describe('(endpoint) FilesController', () => {
     it('should return array of files', async () => {
       jest
         .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce(
-          Right([new AudioFile('id', 'audio-sample', 'uri', DateTime.now())]),
-        );
+        .mockResolvedValueOnce([
+          new AudioFile('id', 'audio-sample', 'uri', DateTime.now()),
+        ]);
 
       return request(httpServer)
         .get(path)
@@ -155,7 +153,7 @@ describe('(endpoint) FilesController', () => {
     it('should return 500 on other exception', () => {
       jest
         .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce(Left(new UncaughtException('error')));
+        .mockResolvedValueOnce(new UncaughtException('error'));
 
       return request(httpServer).get(path).expect(500);
     });
