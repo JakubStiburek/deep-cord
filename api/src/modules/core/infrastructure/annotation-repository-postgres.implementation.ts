@@ -1,4 +1,3 @@
-import { Either, Left, Right } from 'purify-ts';
 import { AudioFile } from '../model/entity/audio-file.entity';
 import { UncaughtException } from '../model/exception/uncaught.exception';
 import { AnnotationRepository } from '../model/repository/annotation.repository';

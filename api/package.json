@@ -37,7 +37,6 @@
     "luxon": "3.5.0",
     "pg-to-ts": "4.1.1",
     "postgres": "3.4.5",
-    "purify-ts": "2.1.0",
     "reflect-metadata": "0.1.13",
     "rxjs": "7.8.1",
     "uuid": "11.0.3"
