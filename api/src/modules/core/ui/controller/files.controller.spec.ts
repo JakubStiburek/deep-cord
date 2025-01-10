@@ -69,7 +69,7 @@ describe('(endpoint) FilesController', () => {
       jest
         .spyOn(audioFileOrchestrator, 'add')
         .mockResolvedValueOnce(
-          Right(new AudioFile('id', 'name', 'uri', DateTime.now())),
+          new AudioFile('id', 'name', 'uri', DateTime.now()),
         );
 
       return request(httpServer)
@@ -81,7 +81,7 @@ describe('(endpoint) FilesController', () => {
     it('should return 409 on conflict', () => {
       jest
         .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(Left(new NotUniqueException()));
+        .mockResolvedValueOnce(new NotUniqueException());
 
       return request(httpServer)
         .post(path)
@@ -92,7 +92,7 @@ describe('(endpoint) FilesController', () => {
     it('should return 500 on other exception', () => {
       jest
         .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(Left(new UncaughtException('error')));
+        .mockResolvedValueOnce(new UncaughtException('error'));
 
       return request(httpServer)
         .post(path)

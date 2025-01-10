@@ -45,19 +45,11 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadFileDto,
   ) {
-    const result = await this.audioFileOrchestrator.add(file, body);
+    const { id, name, uri, createdAt } = this.catchError(
+      await this.audioFileOrchestrator.add(file, body),
+    );
 
-    return result
-      .mapLeft((err) => {
-        if (err instanceof NotUniqueException) {
-          throw new ConflictException();
-        }
-        throw new InternalServerErrorException();
-      })
-      .map(({ id, name, uri, createdAt }) => {
-        return new FileDto(id, name, uri, createdAt);
-      })
-      .extract();
+    return new FileDto(id, name, uri, createdAt);
   }
 
   @Get()
@@ -85,5 +77,17 @@ export class FilesController {
   @Post(':id/transcriptions')
   async transcribeFile(@Param('id', ParseUUIDPipe) id: string) {
     await this.transcriptService.transcribe(id);
+  }
+
+  private catchError(value: any) {
+    if (value instanceof NotUniqueException) {
+      throw new ConflictException();
+    }
+
+    if (value instanceof Error) {
+      throw new InternalServerErrorException();
+    }
+
+    return value;
   }
 }

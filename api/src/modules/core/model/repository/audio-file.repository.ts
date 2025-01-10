@@ -9,7 +9,7 @@ export interface AudioFileRepository {
     name: string,
     uri: string,
     sql: Sql,
-  ): Promise<Either<UncaughtException | NotUniqueException, AudioFile>>;
+  ): Promise<AudioFile | UncaughtException | NotUniqueException>;
 
   getAll(sql: Sql): Promise<Either<UncaughtException, AudioFile[]>>;
 

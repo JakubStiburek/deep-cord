@@ -11,35 +11,29 @@ import { Logger } from '@nestjs/common';
 
 export class AudioFileRepositoryPostgres implements AudioFileRepository {
   private readonly logger = new Logger(AudioFileRepositoryPostgres.name);
-  async add(
-    name: string,
-    uri: string,
-    sql: Sql,
-  ): Promise<Either<UncaughtException, AudioFile>> {
+  async add(name: string, uri: string, sql: Sql) {
     try {
       const [file] = await sql<
         File[]
       >`insert into file (name, uri) values (${name}, ${uri}) returning *`;
 
-      return Right(
-        new AudioFile(
-          file.id,
-          file.name,
-          file.uri,
-          DateTime.fromJSDate(file.created_at),
-        ),
+      return new AudioFile(
+        file.id,
+        file.name,
+        file.uri,
+        DateTime.fromJSDate(file.created_at),
       );
     } catch (err) {
       if (
         err instanceof PostgresError &&
         err.code === PostgresErrorCode.UNIQUE_VIOLATION
       ) {
-        return Left(new NotUniqueException());
+        return new NotUniqueException();
       }
 
       this.logger.warn({ err });
-      return Left(
-        new UncaughtException('AudioFileRepositoryPostgres uncaught exception'),
+      return new UncaughtException(
+        'AudioFileRepositoryPostgres uncaught exception',
       );
     }
   }
