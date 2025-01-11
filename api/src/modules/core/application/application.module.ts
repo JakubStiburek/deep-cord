@@ -60,7 +60,6 @@ import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-
     },
     ConfigService,
     AudioFileRepositoryPostgres,
-    AudioFileEntityRepositoryPostgres,
     AnnotationRepositoryPostgres,
     AudioFileService,
     AnnotationOrchestrator,
