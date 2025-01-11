@@ -1,5 +1,5 @@
 import { Sql } from 'postgres';
-import { AudioFileEntity } from '../value-object/audio-file.entity';
+import { AudioFileEntity } from '../entity/audio-file.entity';
 
 export interface AudioFileEntityRepository {
   add(name: string, uri: string, sql: Sql): Promise<AudioFileEntity>;

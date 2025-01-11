@@ -8,7 +8,7 @@ import { AudioFileEntityRepository } from '../model-zod/repository/audio-file-en
 import {
   AudioFileEntity,
   AudioFileEntitySchema,
-} from '../model-zod/value-object/audio-file.entity';
+} from '../model-zod/entity/audio-file.entity';
 
 export class AudioFileEntityRepositoryPostgres
   implements AudioFileEntityRepository

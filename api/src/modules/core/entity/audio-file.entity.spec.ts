@@ -1,6 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { DateTime } from 'luxon';
-import { AudioFileEntitySchema, transcribe } from './audio-file.entity';
+import {
+  AudioFileEntitySchema,
+  transcribe,
+} from '../model-zod/entity/audio-file.entity';
 
 describe('(unit) File', () => {
   it.each([
