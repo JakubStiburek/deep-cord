@@ -79,8 +79,6 @@ export class AnnotationAggregateRepositoryPostgres
         Annotation[]
       >`insert into annotation ${sql(adaptedAnnotations)} returning *`;
 
-      console.log(batch);
-
       batch.forEach((annotation) =>
         AnnotationAggregateSchema.parse({
           annotation: {
