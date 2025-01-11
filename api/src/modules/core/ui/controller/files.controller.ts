@@ -10,6 +10,7 @@ import {
   Body,
   ParseUUIDPipe,
   Param,
+  HttpCode,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -82,6 +83,8 @@ export class FilesController {
   }
 
   @Post(':id/transcriptions')
+  @ApiOperation({ description: 'Request transcription of a file' })
+  @HttpCode(201)
   async transcribeFile(@Param('id', ParseUUIDPipe) id: string) {
     await this.transcriptService.transcribe(id);
   }
