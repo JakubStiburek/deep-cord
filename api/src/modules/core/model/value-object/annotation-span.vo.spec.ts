@@ -9,6 +9,8 @@ describe('(unit) AnnotationSpan', () => {
     [1, 5, 0],
     [1.5, 3.65, 0],
   ])('should create and validate instance', (start, end, errors) => {
-    expect(validateSync(new AnnotationSpan(start, end)).length).toBe(errors);
+    expect(
+      validateSync(new AnnotationSpan(start as number, end as number)).length,
+    ).toBe(errors);
   });
 });

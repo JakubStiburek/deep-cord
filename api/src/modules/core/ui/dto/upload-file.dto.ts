@@ -24,5 +24,5 @@ export class UploadFileDto {
   })
   @IsString()
   @IsNotEmpty()
-  readonly file: string;
+  readonly file!: string;
 }

@@ -8,17 +8,17 @@ class AnnotationTierDto {
     isArray: true,
     type: AnnotationDto,
   })
-  readonly annotations: AnnotationDto[];
+  readonly annotations!: AnnotationDto[];
 
   @ApiProperty()
-  readonly type: AnnotationTypeEnum;
+  readonly type!: AnnotationTypeEnum;
 }
 
 export class GetRecordResponseDto {
   @ApiProperty({
     example: '1696f02e-d3a8-4084-bc32-b76738afefeb',
   })
-  readonly id: string;
+  readonly id!: string;
 
   @ApiProperty()
   readonly file: FileDto;

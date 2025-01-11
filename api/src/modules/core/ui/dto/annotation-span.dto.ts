@@ -4,10 +4,10 @@ export class AnnotationSpanDto {
   @ApiProperty({
     example: 15.55,
   })
-  readonly start: number;
+  readonly start!: number;
 
   @ApiProperty({
     example: 16.75,
   })
-  readonly end: number;
+  readonly end!: number;
 }

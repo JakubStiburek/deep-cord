@@ -8,16 +8,16 @@ export class CreateAnnotationDto {
   @ApiProperty({
     description: 'Seconds',
   })
-  readonly span: AnnotationSpanDto;
+  readonly span!: AnnotationSpanDto;
 
   @ApiProperty({
     enum: AnnotationTypeEnum,
     example: AnnotationTypeEnum.TRANSCRIPT,
   })
-  readonly type: AnnotationTypeEnum;
+  readonly type!: AnnotationTypeEnum;
 
   @ApiProperty({
     example: 'word',
   })
-  readonly value: Value;
+  readonly value!: Value;
 }

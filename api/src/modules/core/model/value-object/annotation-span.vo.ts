@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsNumber, Min } from 'class-validator';
+import { IsNumber, Min } from 'class-validator';
 
 export class AnnotationSpan {
   @IsNumber()
