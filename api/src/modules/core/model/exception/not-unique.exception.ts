@@ -1,5 +1,5 @@
 export class NotUniqueException extends Error {
   constructor() {
-    super('ConflictException');
+    super('NotUniqueException');
   }
 }

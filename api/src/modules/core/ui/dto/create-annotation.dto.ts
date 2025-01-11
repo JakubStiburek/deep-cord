@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AnnotationTypeEnum } from '../../model/value-object/annotation-type.vo';
 import { AnnotationSpanDto } from './annotation-span.dto';
+import { AnnotationTypeEnum } from '../../model/enum/annotation-type.enum';
 
 type Value = string | number;
 

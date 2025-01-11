@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import {
   AudioFileEntitySchema,
   transcribe,
-} from '../model-zod/entity/audio-file.entity';
+} from '../model/entity/audio-file.entity';
 
 describe('(unit) File', () => {
   it.each([

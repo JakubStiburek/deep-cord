@@ -1,16 +1,16 @@
 import { Logger } from '@nestjs/common';
 import { Sql } from 'postgres';
-import { AudioFileEntity } from '../model-zod/entity/audio-file.entity';
-import { AnnotationAggregateRepository } from '../model-zod/repository/annotation-aggregate.repository';
-import { AnnotationSpanVO } from '../model-zod/value-object/annotation-span.vo';
-import { AnnotationTypeVO } from '../model-zod/value-object/annotation-type.vo';
+import { AudioFileEntity } from '../model/entity/audio-file.entity';
+import { AnnotationAggregateRepository } from '../model/repository/annotation-aggregate.repository';
+import { AnnotationSpanVO } from '../model/value-object/annotation-span.vo';
+import { AnnotationTypeVO } from '../model/value-object/annotation-type.vo';
 import { Annotation } from '../../../common/database/deep-cord-db-schema';
 import {
   convertToAnnotationSpanVo,
   convertToMilis,
 } from './annotation-span.adapter';
-import { AnnotationTypeEnum } from '../model-zod/enum/annotation-type.enum';
-import { AnnotationAggregateSchema } from '../model-zod/aggregate/annotation.aggregate';
+import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
+import { AnnotationAggregateSchema } from '../model/aggregate/annotation.aggregate';
 
 export class AnnotationAggregateRepositoryPostgres
   implements AnnotationAggregateRepository
@@ -79,8 +79,26 @@ export class AnnotationAggregateRepositoryPostgres
         Annotation[]
       >`insert into annotation ${sql(adaptedAnnotations)} returning *`;
 
+      console.log(batch);
+
       batch.forEach((annotation) =>
-        AnnotationAggregateSchema.parse(annotation),
+        AnnotationAggregateSchema.parse({
+          annotation: {
+            id: annotation.id,
+            span: convertToAnnotationSpanVo(
+              annotation.start_time,
+              annotation.end_time,
+            ),
+            type: {
+              value: annotation.type as AnnotationTypeEnum,
+            },
+            value:
+              annotation.type === AnnotationTypeEnum.CONFIDENCE
+                ? Number(annotation.value)
+                : annotation.value,
+          },
+          file,
+        }),
       );
     } catch (err) {
       this.logger.warn('Failed at method addBatch', { err });

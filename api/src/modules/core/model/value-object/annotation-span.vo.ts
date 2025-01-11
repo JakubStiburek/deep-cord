@@ -1,16 +1,10 @@
-import { IsNumber, Min } from 'class-validator';
+import { z } from 'zod';
 
-export class AnnotationSpan {
-  @IsNumber()
-  @Min(0)
-  readonly start: number;
+export const AnnotationSpanVOSchema = z
+  .object({
+    start: z.number().min(0),
+    end: z.number().min(0),
+  })
+  .refine((data) => data.end > data.start);
 
-  @IsNumber()
-  @Min(0)
-  readonly end: number;
-
-  constructor(start: number, end: number) {
-    this.start = start;
-    this.end = end;
-  }
-}
+export type AnnotationSpanVO = z.infer<typeof AnnotationSpanVOSchema>;

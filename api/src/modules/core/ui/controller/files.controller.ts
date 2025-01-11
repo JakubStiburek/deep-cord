@@ -19,13 +19,11 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { FileDto } from '../dto/file.dto';
-import { AudioFileService } from '../../application/audio-file-orchestrator';
-import { NotUniqueException } from '../../model/exception/not-unique.exception';
+import { AudioFileService } from '../../application/audio-file-service';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 import { UploadFileDto } from '../dto/upload-file.dto';
 import { TranscriptService } from '../../application/transcript.service';
-import { AudioFile } from '../../model/entity/audio-file.entity';
-import { error } from 'node:console';
+import { NotUniqueException } from '../../model/exception/not-unique.exception';
 
 @ApiTags('files')
 @Controller('api/audio/files')

@@ -1,27 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AudioFileService } from './audio-file-orchestrator';
-import { AudioFileRepositorySymbol } from '../model/repository/audio-file.repository';
-import { AudioFileRepositoryPostgres } from '../infrastructure/audio-file-repository-postgres.implementation';
+import { AudioFileService } from './audio-file-service';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as postgres from 'postgres';
-import { AnnotationOrchestrator } from './annotation-orchestrator';
-import { AnnotationRepositorySymbol } from '../model/repository/annotation.repository';
-import { AnnotationRepositoryPostgres } from '../infrastructure/annotation-repository-postgres.implementation';
+import { AnnotationService } from './annotation-service';
 import { TranscriptService } from './transcript.service';
-import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-entity-repository-postgres.implementation';
 
 @Module({
   imports: [ConfigModule, InfrastructureModule],
   providers: [
-    {
-      provide: AudioFileRepositorySymbol,
-      useExisting: AudioFileRepositoryPostgres,
-    },
-    {
-      provide: AnnotationRepositorySymbol,
-      useExisting: AnnotationRepositoryPostgres,
-    },
     {
       provide: 'UPLOAD_DIRECTORY_PATH',
       useFactory: (configService: ConfigService) => {
@@ -59,12 +46,10 @@ import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-
       inject: [ConfigService],
     },
     ConfigService,
-    AudioFileRepositoryPostgres,
-    AnnotationRepositoryPostgres,
     AudioFileService,
-    AnnotationOrchestrator,
+    AnnotationService,
     TranscriptService,
   ],
-  exports: [AudioFileService, AnnotationOrchestrator, TranscriptService],
+  exports: [AudioFileService, AnnotationService, TranscriptService],
 })
 export class ApplicationModule {}

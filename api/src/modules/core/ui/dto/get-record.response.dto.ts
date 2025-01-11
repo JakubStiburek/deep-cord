@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FileDto } from './file.dto';
 import { AnnotationDto } from './annotation.dto';
-import { AnnotationTypeEnum } from '../../model/value-object/annotation-type.vo';
+import { AnnotationTypeEnum } from '../../model/enum/annotation-type.enum';
 
 class AnnotationTierDto {
   @ApiProperty({

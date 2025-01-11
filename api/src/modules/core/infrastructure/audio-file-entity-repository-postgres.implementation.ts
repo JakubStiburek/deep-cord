@@ -2,13 +2,13 @@ import { DateTime } from 'luxon';
 import { Sql, PostgresError } from 'postgres';
 import { File } from '../../../common/database/deep-cord-db-schema';
 import { PostgresErrorCode } from './postgres-error-code.enum';
-import { NotUniqueException } from '../model/exception/not-unique.exception';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { AudioFileEntityRepository } from '../model-zod/repository/audio-file-entity.repository';
+import { AudioFileEntityRepository } from '../model/repository/audio-file-entity.repository';
 import {
   AudioFileEntity,
   AudioFileEntitySchema,
-} from '../model-zod/entity/audio-file.entity';
+} from '../model/entity/audio-file.entity';
+import { NotUniqueException } from '../model/exception/not-unique.exception';
 
 export class AudioFileEntityRepositoryPostgres
   implements AudioFileEntityRepository

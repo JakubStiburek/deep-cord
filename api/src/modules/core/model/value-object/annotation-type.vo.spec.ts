@@ -1,16 +1,14 @@
-import { validateSync } from 'class-validator';
-import { AnnotationType, AnnotationTypeEnum } from './annotation-type.vo';
+import { AnnotationTypeEnum } from '../enum/annotation-type.enum';
+import { AnnotationTypeVOSchema } from './annotation-type.vo';
 
 describe('(unit) AnnotationType', () => {
   it.each([
-    [AnnotationTypeEnum.TRANSCRIPT, 0],
-    [AnnotationTypeEnum.CONFIDENCE, 0],
-    [AnnotationTypeEnum.SPEAKER, 0],
-    ['invalid', 1],
-    [undefined, 1],
-  ])('should create and validate instance', (type, errors) => {
-    expect(
-      validateSync(new AnnotationType(type as AnnotationTypeEnum)).length,
-    ).toBe(errors);
+    [AnnotationTypeEnum.TRANSCRIPT, true],
+    [AnnotationTypeEnum.CONFIDENCE, true],
+    [AnnotationTypeEnum.SPEAKER, true],
+    ['invalid', false],
+    [undefined, false],
+  ])('should create and validate instance', (value, success) => {
+    expect(AnnotationTypeVOSchema.safeParse({ value }).success).toBe(success);
   });
 });

@@ -4,7 +4,7 @@ import { UploadFileDto } from '../ui/dto/upload-file.dto';
 import { DateTime } from 'luxon';
 import { Sql } from 'postgres';
 import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-entity-repository-postgres.implementation';
-import { AudioFileEntityRepository } from '../model-zod/repository/audio-file-entity.repository';
+import { AudioFileEntityRepository } from '../model/repository/audio-file-entity.repository';
 
 export class AudioFileService {
   constructor(

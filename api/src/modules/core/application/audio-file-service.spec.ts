@@ -1,6 +1,6 @@
-import { AudioFileService } from './audio-file-orchestrator';
+import { AudioFileService } from './audio-file-service';
 
-describe('(unit) AudioFileOrchestrator', () => {
+describe('(unit) AudioFileService', () => {
   it('should use provided params and return filename', () => {
     expect(AudioFileService.getFilename('og.mp4', 'name', 'wav')).toStrictEqual(
       {

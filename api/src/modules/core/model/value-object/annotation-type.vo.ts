@@ -1,16 +1,8 @@
-import { IsEnum } from 'class-validator';
+import { z } from 'zod';
+import { AnnotationTypeEnum } from '../enum/annotation-type.enum';
 
-export enum AnnotationTypeEnum {
-  TRANSCRIPT = 'transcript',
-  CONFIDENCE = 'confidence',
-  SPEAKER = 'speaker',
-}
+export const AnnotationTypeVOSchema = z.object({
+  value: z.nativeEnum(AnnotationTypeEnum),
+});
 
-export class AnnotationType {
-  @IsEnum(AnnotationTypeEnum)
-  readonly type: AnnotationTypeEnum;
-
-  constructor(type: AnnotationTypeEnum) {
-    this.type = type;
-  }
-}
+export type AnnotationTypeVO = z.infer<typeof AnnotationTypeVOSchema>;

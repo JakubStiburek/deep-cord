@@ -4,51 +4,53 @@ import {
   Get,
   HttpCode,
   InternalServerErrorException,
+  Logger,
   Param,
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetRecordResponseDto } from '../dto/get-record.response.dto';
-import { AnnotationOrchestrator } from '../../application/annotation-orchestrator';
-import { AudioFileService } from '../../application/audio-file-orchestrator';
+import { AnnotationService } from '../../application/annotation-service';
+import { AudioFileService } from '../../application/audio-file-service';
 import { AnnotationDto } from '../dto/annotation.dto';
 import { FileDto } from '../dto/file.dto';
-import { AudioFile } from '../../model/entity/audio-file.entity';
-import { AnnotationAggregate } from '../../model/aggregate/annotation.aggregate';
 import { CreateAnnotationDto } from '../dto/create-annotation.dto';
 
 @ApiTags('record')
 @Controller('api/records')
 export class RecordController {
+  private readonly logger = new Logger(RecordController.name);
   constructor(
-    private readonly audioFileOrchestrator: AudioFileService,
-    private readonly annotationOrchestrator: AnnotationOrchestrator,
+    private readonly audioFileService: AudioFileService,
+    private readonly annotationService: AnnotationService,
   ) {}
 
   @Get(':id')
   @ApiOperation({ description: "Get a record by it's id." })
   @ApiOkResponse({ type: GetRecordResponseDto })
   async getRecord(@Param('id', ParseUUIDPipe) id: string) {
-    const annotations = this.catchError<AnnotationAggregate[]>(
-      await this.annotationOrchestrator.getAnnotationsForRecord(id),
-    );
-    const {
-      id: fileId,
-      name,
-      uri,
-      createdAt,
-      transcribed,
-    } = this.catchError<AudioFile>(
-      await this.audioFileOrchestrator.getById(id),
-    );
+    try {
+      const annotations =
+        await this.annotationService.getAnnotationsForRecord(id);
 
-    return new GetRecordResponseDto(
-      new FileDto(fileId, name, uri, createdAt, transcribed),
-      annotations.map((annotation) =>
-        AnnotationDto.fromEntity(annotation.annotation),
-      ),
-    );
+      const {
+        id: fileId,
+        name,
+        uri,
+        createdAt,
+        transcribed,
+      } = await this.audioFileService.getById(id);
+
+      return new GetRecordResponseDto(
+        new FileDto(fileId, name, uri, createdAt, transcribed),
+        annotations.map((annotation) =>
+          AnnotationDto.fromEntity(annotation.annotation),
+        ),
+      );
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   @Post(':id/annotations')
@@ -58,14 +60,15 @@ export class RecordController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateAnnotationDto,
   ) {
-    this.catchError(await this.annotationOrchestrator.add(id, body));
+    try {
+      await this.annotationService.add(id, body);
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
-  private catchError<T>(value: any) {
-    if (value instanceof Error) {
-      throw new InternalServerErrorException();
-    }
-
-    return value as T;
+  private handleError(err: unknown) {
+    this.logger.error(err);
+    throw new InternalServerErrorException();
   }
 }

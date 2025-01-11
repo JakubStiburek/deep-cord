@@ -4,11 +4,9 @@ import { FilesController } from './files.controller';
 import * as mock from 'mock-fs';
 import { INestApplication } from '@nestjs/common';
 import { Server } from 'http';
-import { AudioFileService } from '../../application/audio-file-orchestrator';
+import { AudioFileService } from '../../application/audio-file-service';
 import { DateTime } from 'luxon';
-import { AudioFile } from '../../model/entity/audio-file.entity';
 import { NotUniqueException } from '../../model/exception/not-unique.exception';
-import { UncaughtException } from '../../model/exception/uncaught.exception';
 
 describe('(endpoint) FilesController', () => {
   const path = '/api/audio/files';
@@ -63,11 +61,13 @@ describe('(endpoint) FilesController', () => {
 
   describe('POST api/audio/files', () => {
     it('should save file', async () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(
-          new AudioFile('id', 'name', 'uri', DateTime.now(), false),
-        );
+      jest.spyOn(audioFileOrchestrator, 'add').mockResolvedValueOnce({
+        id: 'id',
+        name: 'name',
+        uri: 'uri',
+        createdAt: DateTime.now(),
+        transcribed: false,
+      });
 
       return request(httpServer)
         .post(path)
@@ -113,11 +113,15 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should return array of files', async () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce([
-          new AudioFile('id', 'audio-sample', 'uri', DateTime.now(), false),
-        ]);
+      jest.spyOn(audioFileOrchestrator, 'getAll').mockResolvedValueOnce([
+        {
+          id: 'id',
+          name: 'audio-sample',
+          uri: 'uri',
+          createdAt: DateTime.now(),
+          transcribed: false,
+        },
+      ]);
 
       return request(httpServer)
         .get(path)

@@ -1,16 +1,19 @@
-import { validateSync } from 'class-validator';
-import { AnnotationSpan } from './annotation-span.vo';
+import { AnnotationSpanVOSchema } from './annotation-span.vo';
 
 describe('(unit) AnnotationSpan', () => {
   it.each([
-    [-1, 1, 1],
-    [1, -5, 1],
-    [undefined, undefined, 2],
-    [1, 5, 0],
-    [1.5, 3.65, 0],
-  ])('should create and validate instance', (start, end, errors) => {
-    expect(
-      validateSync(new AnnotationSpan(start as number, end as number)).length,
-    ).toBe(errors);
-  });
+    [-1, 1, false],
+    [1, -5, false],
+    [undefined, undefined, false],
+    [3, 1, false],
+    [1, 5, true],
+    [1.5, 3.65, true],
+  ])(
+    'should create and validate instance (case: %#)',
+    (start, end, success) => {
+      expect(AnnotationSpanVOSchema.safeParse({ start, end }).success).toBe(
+        success,
+      );
+    },
+  );
 });
