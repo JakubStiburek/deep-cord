@@ -4,7 +4,7 @@ import { FilesController } from './files.controller';
 import * as mock from 'mock-fs';
 import { INestApplication } from '@nestjs/common';
 import { Server } from 'http';
-import { AudioFileOrchestrator } from '../../application/audio-file-orchestrator';
+import { AudioFileService } from '../../application/audio-file-orchestrator';
 import { DateTime } from 'luxon';
 import { AudioFile } from '../../model/entity/audio-file.entity';
 import { NotUniqueException } from '../../model/exception/not-unique.exception';
@@ -14,14 +14,14 @@ describe('(endpoint) FilesController', () => {
   const path = '/api/audio/files';
   let app: INestApplication;
   let httpServer: Server;
-  let audioFileOrchestrator: AudioFileOrchestrator;
+  let audioFileOrchestrator: AudioFileService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [FilesController],
     })
       .useMocker((token) => {
-        if (token === AudioFileOrchestrator) {
+        if (token === AudioFileService) {
           return {
             add: jest.fn(),
             getAll: jest.fn(),
@@ -34,9 +34,7 @@ describe('(endpoint) FilesController', () => {
     app = moduleRef.createNestApplication();
     await app.init();
     httpServer = app.getHttpServer();
-    audioFileOrchestrator = app.get<AudioFileOrchestrator>(
-      AudioFileOrchestrator,
-    );
+    audioFileOrchestrator = app.get<AudioFileService>(AudioFileService);
 
     mock({
       test: {
@@ -78,25 +76,14 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should return 409 on conflict', () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(new NotUniqueException());
+      jest.spyOn(audioFileOrchestrator, 'add').mockImplementationOnce(() => {
+        throw new NotUniqueException();
+      });
 
       return request(httpServer)
         .post(path)
         .attach('file', './test/audio-sample.mp3')
         .expect(409);
-    });
-
-    it('should return 500 on other exception', () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'add')
-        .mockResolvedValueOnce(new UncaughtException('error'));
-
-      return request(httpServer)
-        .post(path)
-        .attach('file', './test/audio-sample.mp3')
-        .expect(500);
     });
 
     it('should return 500 on any exception', () => {
@@ -151,9 +138,9 @@ describe('(endpoint) FilesController', () => {
     });
 
     it('should return 500 on other exception', () => {
-      jest
-        .spyOn(audioFileOrchestrator, 'getAll')
-        .mockResolvedValueOnce(new UncaughtException('error'));
+      jest.spyOn(audioFileOrchestrator, 'getAll').mockImplementationOnce(() => {
+        throw new Error();
+      });
 
       return request(httpServer).get(path).expect(500);
     });

@@ -11,7 +11,7 @@ import {
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetRecordResponseDto } from '../dto/get-record.response.dto';
 import { AnnotationOrchestrator } from '../../application/annotation-orchestrator';
-import { AudioFileOrchestrator } from '../../application/audio-file-orchestrator';
+import { AudioFileService } from '../../application/audio-file-orchestrator';
 import { AnnotationDto } from '../dto/annotation.dto';
 import { FileDto } from '../dto/file.dto';
 import { AudioFile } from '../../model/entity/audio-file.entity';
@@ -22,7 +22,7 @@ import { CreateAnnotationDto } from '../dto/create-annotation.dto';
 @Controller('api/records')
 export class RecordController {
   constructor(
-    private readonly audioFileOrchestrator: AudioFileOrchestrator,
+    private readonly audioFileOrchestrator: AudioFileService,
     private readonly annotationOrchestrator: AnnotationOrchestrator,
   ) {}
 

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AudioFileOrchestrator } from './audio-file-orchestrator';
+import { AudioFileService } from './audio-file-orchestrator';
 import { AudioFileRepositorySymbol } from '../model/repository/audio-file.repository';
 import { AudioFileRepositoryPostgres } from '../infrastructure/audio-file-repository-postgres.implementation';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
@@ -9,6 +9,7 @@ import { AnnotationOrchestrator } from './annotation-orchestrator';
 import { AnnotationRepositorySymbol } from '../model/repository/annotation.repository';
 import { AnnotationRepositoryPostgres } from '../infrastructure/annotation-repository-postgres.implementation';
 import { TranscriptService } from './transcript.service';
+import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-entity-repository-postgres.implementation';
 
 @Module({
   imports: [ConfigModule, InfrastructureModule],
@@ -59,11 +60,12 @@ import { TranscriptService } from './transcript.service';
     },
     ConfigService,
     AudioFileRepositoryPostgres,
+    AudioFileEntityRepositoryPostgres,
     AnnotationRepositoryPostgres,
-    AudioFileOrchestrator,
+    AudioFileService,
     AnnotationOrchestrator,
     TranscriptService,
   ],
-  exports: [AudioFileOrchestrator, AnnotationOrchestrator, TranscriptService],
+  exports: [AudioFileService, AnnotationOrchestrator, TranscriptService],
 })
 export class ApplicationModule {}

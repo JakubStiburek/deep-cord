@@ -1,21 +1,19 @@
 import * as fs from 'fs';
 import { Inject } from '@nestjs/common';
-import {
-  AudioFileRepository,
-  AudioFileRepositorySymbol,
-} from '../model/repository/audio-file.repository';
 import { UploadFileDto } from '../ui/dto/upload-file.dto';
 import { DateTime } from 'luxon';
 import { Sql } from 'postgres';
+import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-entity-repository-postgres.implementation';
+import { AudioFileEntityRepository } from '../model-zod/repository/audio-file-entity.repository';
 
-export class AudioFileOrchestrator {
+export class AudioFileService {
   constructor(
     @Inject('UPLOAD_DIRECTORY_PATH')
     private readonly uploadDirectoryPath: string,
     @Inject('POSTGRES_CLIENT')
     private readonly sql: Sql,
-    @Inject(AudioFileRepositorySymbol)
-    private readonly repository: AudioFileRepository,
+    @Inject(AudioFileEntityRepositoryPostgres)
+    private readonly repository: AudioFileEntityRepository,
   ) {}
 
   async add(file: Express.Multer.File, dto: UploadFileDto) {
@@ -25,7 +23,7 @@ export class AudioFileOrchestrator {
       await fs.promises.mkdir(this.uploadDirectoryPath, { recursive: true });
     }
 
-    const filename = AudioFileOrchestrator.getFilename(
+    const filename = AudioFileService.getFilename(
       file.originalname,
       dto.name,
       dto.extension,

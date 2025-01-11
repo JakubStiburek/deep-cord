@@ -19,19 +19,20 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { FileDto } from '../dto/file.dto';
-import { AudioFileOrchestrator } from '../../application/audio-file-orchestrator';
+import { AudioFileService } from '../../application/audio-file-orchestrator';
 import { NotUniqueException } from '../../model/exception/not-unique.exception';
 import { ListUploadedFilesResponseDto } from '../dto/list-uploaded-files.response.dto';
 import { UploadFileDto } from '../dto/upload-file.dto';
 import { TranscriptService } from '../../application/transcript.service';
 import { AudioFile } from '../../model/entity/audio-file.entity';
+import { error } from 'node:console';
 
 @ApiTags('files')
 @Controller('api/audio/files')
 export class FilesController {
   private readonly logger = new Logger(FilesController.name);
   constructor(
-    private readonly audioFileOrchestrator: AudioFileOrchestrator,
+    private readonly audioFileOrchestrator: AudioFileService,
     private readonly transcriptService: TranscriptService,
   ) {}
 
@@ -46,12 +47,14 @@ export class FilesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UploadFileDto,
   ) {
-    const { id, name, uri, createdAt, transcribed } =
-      this.catchError<AudioFile>(
-        await this.audioFileOrchestrator.add(file, body),
-      );
+    try {
+      const { id, name, uri, createdAt, transcribed } =
+        await this.audioFileOrchestrator.add(file, body);
 
-    return new FileDto(id, name, uri, createdAt, transcribed);
+      return new FileDto(id, name, uri, createdAt, transcribed);
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   @Get()
@@ -60,22 +63,24 @@ export class FilesController {
   })
   @ApiOkResponse({ type: ListUploadedFilesResponseDto })
   async listUploadedFiles() {
-    const result = this.catchError<AudioFile[]>(
-      await this.audioFileOrchestrator.getAll(),
-    );
+    try {
+      const result = await this.audioFileOrchestrator.getAll();
 
-    return new ListUploadedFilesResponseDto(
-      result.map(
-        (file) =>
-          new FileDto(
-            file.id,
-            file.name,
-            file.uri,
-            file.createdAt,
-            file.transcribed,
-          ),
-      ),
-    );
+      return new ListUploadedFilesResponseDto(
+        result.map(
+          (file) =>
+            new FileDto(
+              file.id,
+              file.name,
+              file.uri,
+              file.createdAt,
+              file.transcribed,
+            ),
+        ),
+      );
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   @Post(':id/transcriptions')
@@ -83,15 +88,14 @@ export class FilesController {
     await this.transcriptService.transcribe(id);
   }
 
-  private catchError<T>(value: any) {
-    if (value instanceof NotUniqueException) {
+  private handleError(err: unknown) {
+    if (err instanceof NotUniqueException) {
+      this.logger.log('what');
+      this.logger.warn(err);
       throw new ConflictException();
     }
 
-    if (value instanceof Error) {
-      throw new InternalServerErrorException();
-    }
-
-    return value as T;
+    this.logger.error(err);
+    throw new InternalServerErrorException();
   }
 }
