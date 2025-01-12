@@ -25,6 +25,10 @@ export class HttpReqResLoggingMiddleware implements NestMiddleware {
         ip,
       };
 
+      if (originalUrl === '/health' && res.statusCode === 200) {
+        return;
+      }
+
       this.logger.log(message);
     });
 
