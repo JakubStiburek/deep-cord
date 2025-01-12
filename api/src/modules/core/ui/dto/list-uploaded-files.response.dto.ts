@@ -4,6 +4,7 @@ import { FileDto } from './file.dto';
 export class ListUploadedFilesResponseDto {
   @ApiProperty({
     type: FileDto,
+    isArray: true,
     description: 'List of uploaded files.',
   })
   readonly files: FileDto[];
