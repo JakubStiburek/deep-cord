@@ -37,10 +37,9 @@ import { Link } from "react-router";
 import { DateTime } from "luxon";
 import { toast } from "sonner";
 
-export type File = {
-  id: string;
-  uri: string;
-};
+import type { File } from "@/modules/record/types";
+import { useRecords } from "../../hooks/use-list-records";
+import { components } from "@/modules/common/types/api-schema";
 
 export const columns: ColumnDef<File>[] = [
   {
@@ -139,7 +138,8 @@ export const columns: ColumnDef<File>[] = [
   },
 ];
 
-export function UploadsTable({ data = [] }: { data: File[] }) {
+export function UploadsTable() {
+  const { data } = useRecords();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -148,8 +148,13 @@ export function UploadsTable({ data = [] }: { data: File[] }) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const memoizedData = React.useMemo(
+    () => (data?.files as unknown as File[]) ?? [],
+    [data]
+  );
+
   const table = useReactTable({
-    data: data ?? [],
+    data: memoizedData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

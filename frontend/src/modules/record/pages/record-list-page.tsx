@@ -3,12 +3,10 @@ import { DashboardPaper } from "@/modules/common/layouts/dashboard-paper";
 import { RecordUploadModal } from "../components/record-upload-modal";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/modules/common/components/ui/button";
-import { useRecords } from "../hooks/use-list-records";
+
 import { useState } from "react";
 
 export function RecordListPage() {
-  const { data } = useRecords();
-
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,7 +26,7 @@ export function RecordListPage() {
         </RecordUploadModal>
       </div>
 
-      <UploadsTable data={data} />
+      <UploadsTable />
     </DashboardPaper>
   );
 }
