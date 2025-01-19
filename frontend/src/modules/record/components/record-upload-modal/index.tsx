@@ -21,7 +21,7 @@ import {
 
 import { toast } from "sonner";
 
-import { useCreateRecord } from "../../hooks/use-create-record";
+import { useCreateRecord } from "@/modules/record/hooks/use-create-record";
 
 export function RecordUploadModal({
   children,
@@ -60,6 +60,12 @@ export function RecordUploadModal({
     },
     multiple: false,
     noDragEventsBubbling: true,
+    onDropRejected(fileRejections) {
+      const errorMessage = fileRejections
+        .map((rejection) => rejection.errors[0].message)
+        .join(", ");
+      toast.error(`File error: ${errorMessage}`);
+    },
   });
 
   const mutation = useCreateRecord({
@@ -80,7 +86,18 @@ export function RecordUploadModal({
     formData.append("file", selectedFiles[0]);
     formData.append("name", recordName);
 
-    mutation.mutate(formData);
+    try {
+      mutation.mutate({
+        // TODO: Fix after OpenAPI update
+        body: formData as unknown as {
+          file: string;
+          name?: string;
+          extension?: string;
+        },
+      });
+    } catch (_) {
+      toast.error("An unexpected error occurred.");
+    }
   };
   return (
     <Dialog {...{ open, onOpenChange: setOpen }}>

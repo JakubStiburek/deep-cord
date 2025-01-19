@@ -1,10 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchRecordsListApi } from "../api/fetch-records";
+import { $api } from "@/modules/common/api";
 
-export const useRecords = () => {
-  const query = useQuery({
-    queryKey: ["records"],
-    queryFn: fetchRecordsListApi,
-  });
-  return query;
-};
+export const useRecords = () => $api.useQuery("get", "/api/audio/files");

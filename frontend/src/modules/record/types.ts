@@ -1,3 +1,5 @@
+import { components } from "@/modules/common/types/api-schema";
+
 export type Record = {
   id: string;
   file: {
@@ -19,3 +21,5 @@ export type Record = {
   ];
   label: string;
 };
+
+export type File = components["schemas"]["FileDto"];
