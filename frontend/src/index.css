@@ -93,9 +93,30 @@
 }
 
 .vis-timeline {
-  @apply rounded-sm;
+  @apply rounded-sm border-gray-800 border-0 rounded-none;
+  @apply border-t !important;
+}
+
+.vis-label {
+  @apply border-gray-800 !important;
 }
 
 .vis-vertical {
   @apply border-gray-700 !important;
+}
+
+.vis-group {
+  @apply border-gray-800 !important;
+}
+
+.vis-panel.vis-left {
+  @apply w-[100px] max-w-[100px] min-w-[100px] overflow-hidden border-gray-800 border-l-0 !important;
+}
+
+.vis-panel.vis-center {
+  @apply border-gray-800 !important;
+}
+
+.vis-panel.vis-bottom {
+  @apply border-gray-800 !important;
 }
