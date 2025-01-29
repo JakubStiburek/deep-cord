@@ -39,7 +39,6 @@ import { toast } from "sonner";
 
 import type { File } from "@/modules/record/types";
 import { useRecords } from "../../hooks/use-list-records";
-import { components } from "@/modules/common/types/api-schema";
 
 export const columns: ColumnDef<File>[] = [
   {
