@@ -26,7 +26,12 @@ export class TranscriptService {
 
     const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
       fs.readFileSync(file.uri),
-      { smart_format: true, model: 'nova-2', detect_language: true },
+      {
+        smart_format: true,
+        model: 'nova-2',
+        detect_language: true,
+        diarize: true,
+      },
     );
 
     if (error) throw error;
@@ -53,10 +58,17 @@ export class TranscriptService {
           value: word.confidence,
         };
       });
+      const speakerBatch = words.map((word) => {
+        return {
+          span: { start: word.start, end: word.end },
+          type: { value: AnnotationTypeEnum.SPEAKER },
+          value: `${word.speaker}`,
+        };
+      });
 
       await this.annotationRepository.addBatch(
         file,
-        [...transcriptBatch, ...confidenceBatch],
+        [...transcriptBatch, ...confidenceBatch, ...speakerBatch],
         sql,
       );
 
