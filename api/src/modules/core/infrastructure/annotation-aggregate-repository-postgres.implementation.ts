@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { Sql } from 'postgres';
 import { AudioFileEntity } from '../model/entity/audio-file.entity';
 import { AnnotationAggregateRepository } from '../model/repository/annotation-aggregate.repository';
@@ -10,7 +10,10 @@ import {
   convertToMilis,
 } from './annotation-span.adapter';
 import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
-import { AnnotationAggregateSchema } from '../model/aggregate/annotation.aggregate';
+import {
+  AnnotationAggregate,
+  AnnotationAggregateSchema,
+} from '../model/aggregate/annotation.aggregate';
 
 export class AnnotationAggregateRepositoryPostgres
   implements AnnotationAggregateRepository
@@ -18,6 +21,46 @@ export class AnnotationAggregateRepositoryPostgres
   private readonly logger = new Logger(
     AnnotationAggregateRepositoryPostgres.name,
   );
+
+  async getById(
+    id: string,
+    file: AudioFileEntity,
+    sql: Sql,
+  ): Promise<AnnotationAggregate> {
+    try {
+      const [annotation] = await sql<
+        Annotation[]
+      >`select * from annotation where id = ${id}`;
+
+      if (!annotation) {
+        throw new NotFoundException();
+      }
+
+      const aggregate = {
+        annotation: {
+          id: annotation.id,
+          span: convertToAnnotationSpanVo(
+            annotation.start_time,
+            annotation.end_time,
+          ),
+          type: {
+            value: annotation.type as AnnotationTypeEnum,
+          },
+          value:
+            annotation.type === AnnotationTypeEnum.CONFIDENCE
+              ? Number(annotation.value)
+              : annotation.value,
+        },
+        file,
+      };
+
+      return AnnotationAggregateSchema.parse(aggregate);
+    } catch (err) {
+      this.logger.warn('Failed at method getById', { err });
+      throw err;
+    }
+  }
+
   async add(
     file: AudioFileEntity,
     span: AnnotationSpanVO,
@@ -49,6 +92,23 @@ export class AnnotationAggregateRepositoryPostgres
         },
         file,
       };
+
+      return AnnotationAggregateSchema.parse(aggregate);
+    } catch (err) {
+      this.logger.warn('Failed at method add', { err });
+      throw err;
+    }
+  }
+
+  async save(aggregate: AnnotationAggregate, sql: Sql) {
+    try {
+      const { start_time, end_time } = convertToMilis(
+        aggregate.annotation.span,
+      );
+
+      await sql<
+        Annotation[]
+      >`update annotation set start_time = ${start_time}, end_time = ${end_time},  value = ${aggregate.annotation.value} where id = ${aggregate.annotation.id} returning *`;
 
       return AnnotationAggregateSchema.parse(aggregate);
     } catch (err) {

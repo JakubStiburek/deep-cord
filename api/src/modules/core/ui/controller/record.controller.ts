@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,17 +7,25 @@ import {
   HttpCode,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetRecordResponseDto } from '../dto/get-record.response.dto';
 import { AnnotationService } from '../../application/annotation-service';
 import { AudioFileService } from '../../application/audio-file-service';
 import { AnnotationDto } from '../dto/annotation.dto';
 import { FileDto } from '../dto/file.dto';
 import { CreateAnnotationDto } from '../dto/create-annotation.dto';
+import { UpdateAnnotationDto } from '../dto/update-annotation.dto';
 
 @ApiTags('Records')
 @Controller('api/records')
@@ -28,7 +37,12 @@ export class RecordController {
   ) {}
 
   @Get(':id')
-  @ApiOperation({ description: "Get a record by it's id." })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
+  @ApiOperation({ description: "Get a record by it's file ID." })
   @ApiOkResponse({ type: GetRecordResponseDto })
   async getRecord(@Param('id', ParseUUIDPipe) id: string) {
     try {
@@ -55,6 +69,11 @@ export class RecordController {
   }
 
   @Post(':id/annotations')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
   @ApiOperation({ description: 'Add annotation to record' })
   @HttpCode(201)
   async addAnnotation(
@@ -68,7 +87,32 @@ export class RecordController {
     }
   }
 
+  @Patch(':id/annotations/:annotationId')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
+  @ApiOperation({ description: 'Add annotation to record' })
+  @HttpCode(201)
+  async updateAnnotation(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('annotationId', ParseUUIDPipe) annotationId: string,
+    @Body() body: UpdateAnnotationDto,
+  ) {
+    try {
+      await this.annotationService.update(id, body, annotationId);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   @Delete(':id/annotations/:annotationId')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
   @ApiOperation({ description: 'Delete an annotation' })
   @HttpCode(201)
   async deleteAnnotation(
@@ -83,6 +127,14 @@ export class RecordController {
 
   private handleError(err: unknown) {
     this.logger.error(err);
+    if (err instanceof NotFoundException) {
+      throw err;
+    }
+
+    if (err instanceof Error && err.message.includes('Invalid input')) {
+      throw new BadRequestException();
+    }
+
     throw new InternalServerErrorException();
   }
 }

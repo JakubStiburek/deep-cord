@@ -13,7 +13,32 @@ export const AnnotationEntitySchema = z
   .refine((data) => {
     if (data.type.value === AnnotationTypeEnum.CONFIDENCE) {
       return typeof data.value === 'number';
-    } else return typeof data.value === 'string';
+    } else
+      return typeof data.value === 'string' && Number.isNaN(Number(data.value));
   });
 
 export type AnnotationEntity = z.infer<typeof AnnotationEntitySchema>;
+
+export function updateAnnotationSpan(
+  annotation: AnnotationEntity,
+  start: number,
+  end: number,
+) {
+  return AnnotationEntitySchema.parse({
+    ...annotation,
+    span: {
+      start,
+      end,
+    },
+  });
+}
+
+export function updateAnnotationValue(
+  annotation: AnnotationEntity,
+  value: string | number,
+) {
+  return AnnotationEntitySchema.parse({
+    ...annotation,
+    value,
+  });
+}
