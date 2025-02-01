@@ -17,7 +17,7 @@ import { AnnotationDto } from '../dto/annotation.dto';
 import { FileDto } from '../dto/file.dto';
 import { CreateAnnotationDto } from '../dto/create-annotation.dto';
 
-@ApiTags('record')
+@ApiTags('Records')
 @Controller('api/records')
 export class RecordController {
   private readonly logger = new Logger(RecordController.name);

@@ -26,7 +26,7 @@ import { UploadFileDto } from '../dto/upload-file.dto';
 import { TranscriptService } from '../../application/transcript.service';
 import { NotUniqueException } from '../../model/exception/not-unique.exception';
 
-@ApiTags('files')
+@ApiTags('Files')
 @Controller('api/audio/files')
 export class FilesController {
   private readonly logger = new Logger(FilesController.name);
