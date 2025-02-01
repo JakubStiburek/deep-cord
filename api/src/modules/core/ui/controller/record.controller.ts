@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   InternalServerErrorException,
@@ -62,6 +63,19 @@ export class RecordController {
   ) {
     try {
       await this.annotationService.add(id, body);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @Delete(':id/annotations/:annotationId')
+  @ApiOperation({ description: 'Delete an annotation' })
+  @HttpCode(201)
+  async deleteAnnotation(
+    @Param('annotationId', ParseUUIDPipe) annotationId: string,
+  ) {
+    try {
+      await this.annotationService.delete(annotationId);
     } catch (err) {
       this.handleError(err);
     }

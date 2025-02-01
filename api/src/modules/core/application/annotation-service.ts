@@ -39,4 +39,8 @@ export class AnnotationService {
       return await this.annotationRepository.getAnnotationsForRecord(file, sql);
     });
   }
+
+  async delete(id: string) {
+    await this.sql`delete from annotation where id = ${id}`;
+  }
 }
