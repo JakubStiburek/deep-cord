@@ -21,11 +21,11 @@ export class TranscriptService {
     private readonly fileRepository: AudioFileEntityRepository,
   ) {}
 
-  private async transcribeLocalFile(file: AudioFileEntity) {
+  private async transcribeFile(file: AudioFileEntity) {
     const deepgram = createClient(this.apiKey);
 
-    const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
-      fs.readFileSync(file.uri),
+    const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
+      { url: file.uri },
       {
         smart_format: true,
         model: 'nova-2',
@@ -42,7 +42,7 @@ export class TranscriptService {
     return this.sql.begin(async (sql) => {
       const file = await this.fileRepository.getById(id, this.sql);
 
-      const transcription = await this.transcribeLocalFile(file);
+      const transcription = await this.transcribeFile(file);
       const words = transcription.results.channels[0].alternatives[0].words;
       const transcriptBatch = words.map((word) => {
         return {

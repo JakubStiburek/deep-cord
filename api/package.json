@@ -38,6 +38,7 @@
     "axios": "1.7.9",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
+    "cloudinary": "2.5.1",
     "luxon": "3.5.0",
     "pg-to-ts": "4.1.1",
     "postgres": "3.4.5",

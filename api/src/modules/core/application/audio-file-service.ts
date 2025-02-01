@@ -1,5 +1,6 @@
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import * as fs from 'fs';
-import { Inject } from '@nestjs/common';
+import { Inject, InternalServerErrorException, Logger } from '@nestjs/common';
 import { UploadFileDto } from '../ui/dto/upload-file.dto';
 import { DateTime } from 'luxon';
 import { Sql } from 'postgres';
@@ -7,6 +8,7 @@ import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-
 import { AudioFileEntityRepository } from '../model/repository/audio-file-entity.repository';
 
 export class AudioFileService {
+  private readonly logger = new Logger(AudioFileService.name);
   constructor(
     @Inject('UPLOAD_DIRECTORY_PATH')
     private readonly uploadDirectoryPath: string,
@@ -14,24 +16,25 @@ export class AudioFileService {
     private readonly sql: Sql,
     @Inject(AudioFileEntityRepositoryPostgres)
     private readonly repository: AudioFileEntityRepository,
+    @Inject('CLOUDINARY_CREDENTIALS')
+    private readonly cloudinaryCredentials: {
+      name: string;
+      apiKey: string;
+      apiSecret: string;
+    },
   ) {}
 
   async add(file: Express.Multer.File, dto: UploadFileDto) {
-    try {
-      await fs.promises.access(this.uploadDirectoryPath, fs.constants.W_OK);
-    } catch (_) {
-      await fs.promises.mkdir(this.uploadDirectoryPath, { recursive: true });
-    }
-
     const filename = AudioFileService.getFilename(
       file.originalname,
       dto.name,
       dto.extension,
     );
 
-    const uri = `${this.uploadDirectoryPath}/record-${filename.name}-${DateTime.now().toISODate()}.${filename.extension}`;
-
-    await fs.promises.writeFile(uri, file.buffer);
+    const uri = await this.uploadFileToCloudinary(
+      file,
+      `record-${filename.name}-${DateTime.now().toISODate()}`,
+    );
 
     return await this.repository.add(filename.name, uri, this.sql);
   }
@@ -49,5 +52,37 @@ export class AudioFileService {
       name: name || originalname.split('.')[0],
       extension: extension || originalname.split('.')[1] || 'mp3',
     };
+  }
+
+  private async uploadFileToCloudinary(
+    file: Express.Multer.File,
+    name: string,
+  ) {
+    cloudinary.config({
+      cloud_name: this.cloudinaryCredentials.name,
+      api_key: this.cloudinaryCredentials.apiKey,
+      api_secret: this.cloudinaryCredentials.apiSecret,
+    });
+
+    const result: UploadApiResponse | undefined = await new Promise(
+      (resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            { resource_type: 'video', public_id: name },
+            (error, uploadResult) => {
+              if (error) reject(error);
+              return resolve(uploadResult);
+            },
+          )
+          .end(file.buffer);
+      },
+    );
+
+    if (!result) {
+      this.logger.warn('Upload to Cloudinary failed');
+      throw new InternalServerErrorException();
+    }
+
+    return result.url;
   }
 }

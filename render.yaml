@@ -4,6 +4,7 @@ services:
     runtime: docker
     repo: https://github.com/JakubStiburek/deep-cord
     plan: free
+    autoDeploy: false
     envVars:
       - key: PORT
         sync: false
@@ -20,6 +21,12 @@ services:
       - key: NODE_ENV
         sync: false
       - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
         sync: false
     region: frankfurt
     dockerContext: .

@@ -13,8 +13,11 @@ export const AnnotationEntitySchema = z
   .refine((data) => {
     if (data.type.value === AnnotationTypeEnum.CONFIDENCE) {
       return typeof data.value === 'number';
-    } else
+    } else if (data.type.value === AnnotationTypeEnum.TRANSCRIPT) {
       return typeof data.value === 'string' && Number.isNaN(Number(data.value));
+    } else {
+      return typeof data.value === 'string';
+    }
   });
 
 export type AnnotationEntity = z.infer<typeof AnnotationEntitySchema>;

@@ -45,6 +45,17 @@ import { TranscriptService } from './transcript.service';
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'CLOUDINARY_CREDENTIALS',
+      useFactory: (configService: ConfigService) => {
+        return {
+          name: configService.get('cloudinary.name'),
+          apiKey: configService.get('cloudinary.apiKey'),
+          apiSecret: configService.get('cloudinary.apiSecret'),
+        };
+      },
+      inject: [ConfigService],
+    },
     ConfigService,
     AudioFileService,
     AnnotationService,

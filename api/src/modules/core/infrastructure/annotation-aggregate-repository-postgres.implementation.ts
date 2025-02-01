@@ -139,25 +139,30 @@ export class AnnotationAggregateRepositoryPostgres
         Annotation[]
       >`insert into annotation ${sql(adaptedAnnotations)} returning *`;
 
-      batch.forEach((annotation) =>
-        AnnotationAggregateSchema.parse({
-          annotation: {
-            id: annotation.id,
-            span: convertToAnnotationSpanVo(
-              annotation.start_time,
-              annotation.end_time,
-            ),
-            type: {
-              value: annotation.type as AnnotationTypeEnum,
+      batch.forEach((annotation) => {
+        try {
+          AnnotationAggregateSchema.parse({
+            annotation: {
+              id: annotation.id,
+              span: convertToAnnotationSpanVo(
+                annotation.start_time,
+                annotation.end_time,
+              ),
+              type: {
+                value: annotation.type as AnnotationTypeEnum,
+              },
+              value:
+                annotation.type === AnnotationTypeEnum.CONFIDENCE
+                  ? Number(annotation.value)
+                  : annotation.value,
             },
-            value:
-              annotation.type === AnnotationTypeEnum.CONFIDENCE
-                ? Number(annotation.value)
-                : annotation.value,
-          },
-          file,
-        }),
-      );
+            file,
+          });
+        } catch (err) {
+          this.logger.log({ err, annotation });
+          throw err;
+        }
+      });
     } catch (err) {
       this.logger.warn('Failed at method addBatch', { err });
       throw err;
