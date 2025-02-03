@@ -8,5 +8,5 @@ export interface AudioFileEntityRepository {
 
   getById(id: string, sql: Sql): Promise<AudioFileEntity>;
 
-  update(file: AudioFileEntity, sql: Sql): Promise<AudioFileEntity>;
+  save(file: AudioFileEntity, sql: Sql): Promise<AudioFileEntity>;
 }

@@ -100,9 +100,9 @@ export class AudioFileEntityRepositoryPostgres
     }
   }
 
-  async update(file: AudioFileEntity, sql: Sql) {
+  async save(file: AudioFileEntity, sql: Sql) {
     try {
-      await sql`update file set ${sql({ id: file.id, name: file.name, uri: file.uri, created_at: file.createdAt, transcribed: file.transcribed })}`;
+      await sql`update file set ${sql({ id: file.id, name: file.name, uri: file.uri, created_at: file.createdAt, transcribed: file.transcribed })} where id = ${file.id}`;
 
       return file;
     } catch (err) {

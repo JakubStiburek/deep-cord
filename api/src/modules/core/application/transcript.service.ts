@@ -72,7 +72,7 @@ export class TranscriptService {
         sql,
       );
 
-      const fileUpdateResult = await this.fileRepository.update(
+      const fileUpdateResult = await this.fileRepository.save(
         transcribe(file),
         sql,
       );
