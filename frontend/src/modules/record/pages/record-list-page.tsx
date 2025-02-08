@@ -1,16 +1,16 @@
 import { UploadsTable } from "@/modules/record/components/record-uploads-table";
-import { DashboardPaper } from "@/modules/common/layouts/dashboard-paper";
 import { RecordUploadModal } from "../components/record-upload-modal";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/modules/common/components/ui/button";
 
 import { useState } from "react";
+import { DashboardWrapper } from "@/modules/common/layouts/dashboard-wrapper";
 
 export function RecordListPage() {
   const [open, setOpen] = useState(false);
 
   return (
-    <DashboardPaper>
+    <DashboardWrapper>
       <div className="flex justify-end">
         <RecordUploadModal
           {...{
@@ -27,6 +27,6 @@ export function RecordListPage() {
       </div>
 
       <UploadsTable />
-    </DashboardPaper>
+    </DashboardWrapper>
   );
 }
