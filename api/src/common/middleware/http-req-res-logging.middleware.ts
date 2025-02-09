@@ -22,7 +22,7 @@ export class HttpReqResLoggingMiddleware implements NestMiddleware {
         resource: originalUrl,
         status: res.statusCode,
         duration: `${duration}`,
-        ip,
+        ip: this.getClientIp(req),
       };
 
       if (originalUrl === '/health' && res.statusCode === 200) {
@@ -33,5 +33,23 @@ export class HttpReqResLoggingMiddleware implements NestMiddleware {
     });
 
     next();
+  }
+
+  private getClientIp(req: Request): string {
+    // Check X-Forwarded-For header
+    const forwardedFor = req.header('X-Forwarded-For');
+    if (forwardedFor) {
+      // Get the first IP in the chain
+      return forwardedFor.split(',')[0].trim();
+    }
+
+    // Check other common headers
+    const realIp = req.header('X-Real-IP');
+    if (realIp) {
+      return realIp;
+    }
+
+    // Fall back to connection remote address
+    return req.ip || req.connection.remoteAddress || 'unknown';
   }
 }
