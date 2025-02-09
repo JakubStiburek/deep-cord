@@ -12,13 +12,15 @@ export function getAnnotation(override?: {
   id?: string;
   span?: AnnotationSpanVO;
   type?: AnnotationTypeVO;
-  value?: string | number;
+  value?: string;
+  confidence?: number;
 }) {
   return {
     id: uuid(),
     span: { start: 1, end: 2 },
     type: { value: AnnotationTypeEnum.TRANSCRIPT },
     value: 'word',
+    confidence: 1,
     ...override,
   };
 }
@@ -42,21 +44,14 @@ describe('(unit) Annotation', () => {
     {
       annotation: getAnnotation({
         type: { value: AnnotationTypeEnum.TRANSCRIPT },
-        value: 1,
+        value: 1 as unknown as string,
       }),
       success: false,
     },
     {
       annotation: getAnnotation({
         type: { value: AnnotationTypeEnum.SPEAKER },
-        value: 1,
-      }),
-      success: false,
-    },
-    {
-      annotation: getAnnotation({
-        type: { value: AnnotationTypeEnum.CONFIDENCE },
-        value: 'word',
+        value: 1 as unknown as string,
       }),
       success: false,
     },

@@ -1,6 +1,5 @@
 import { createClient } from '@deepgram/sdk';
 import { Inject } from '@nestjs/common';
-import * as fs from 'fs';
 import { Sql } from 'postgres';
 import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
 import { AnnotationAggregateRepositoryPostgres } from '../infrastructure/annotation-aggregate-repository-postgres.implementation';
@@ -49,13 +48,7 @@ export class TranscriptService {
           span: { start: word.start, end: word.end },
           type: { value: AnnotationTypeEnum.TRANSCRIPT },
           value: word.word,
-        };
-      });
-      const confidenceBatch = words.map((word) => {
-        return {
-          span: { start: word.start, end: word.end },
-          type: { value: AnnotationTypeEnum.CONFIDENCE },
-          value: word.confidence,
+          confidence: word.confidence,
         };
       });
       const speakerBatch = words.map((word) => {
@@ -63,12 +56,13 @@ export class TranscriptService {
           span: { start: word.start, end: word.end },
           type: { value: AnnotationTypeEnum.SPEAKER },
           value: `${word.speaker}`,
+          confidence: word.confidence,
         };
       });
 
       await this.annotationRepository.addBatch(
         file,
-        [...transcriptBatch, ...confidenceBatch, ...speakerBatch],
+        [...transcriptBatch, ...speakerBatch],
         sql,
       );
 

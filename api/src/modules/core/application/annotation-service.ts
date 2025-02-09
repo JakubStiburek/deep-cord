@@ -34,6 +34,7 @@ export class AnnotationService {
         { start: dto.span.start, end: dto.span.end },
         { value: dto.type },
         dto.value,
+        1,
         sql,
       );
     });

@@ -17,6 +17,7 @@ describe('(unit) AnnotationAggregate', () => {
             value: AnnotationTypeEnum.TRANSCRIPT,
           },
           value: 'word',
+          confidence: 0.5,
         },
         file: {
           id: uuid(),

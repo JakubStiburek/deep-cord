@@ -15,7 +15,8 @@ export interface AnnotationAggregateRepository {
     file: AudioFileEntity,
     span: AnnotationSpanVO,
     type: AnnotationTypeVO,
-    value: string | number,
+    value: string,
+    confidence: number,
     sql: Sql,
     id?: string,
   ): Promise<AnnotationAggregate>;
@@ -27,7 +28,8 @@ export interface AnnotationAggregateRepository {
     annotations: {
       span: AnnotationSpanVO;
       type: AnnotationTypeVO;
-      value: string | number;
+      value: string;
+      confidence: number;
     }[],
     sql: Sql,
   ): Promise<void>;

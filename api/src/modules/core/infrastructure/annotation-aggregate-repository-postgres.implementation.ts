@@ -46,10 +46,8 @@ export class AnnotationAggregateRepositoryPostgres
           type: {
             value: annotation.type as AnnotationTypeEnum,
           },
-          value:
-            annotation.type === AnnotationTypeEnum.CONFIDENCE
-              ? Number(annotation.value)
-              : annotation.value,
+          value: annotation.value,
+          confidence: Number(annotation.confidence),
         },
         file,
       };
@@ -65,7 +63,8 @@ export class AnnotationAggregateRepositoryPostgres
     file: AudioFileEntity,
     span: AnnotationSpanVO,
     type: AnnotationTypeVO,
-    value: string | number,
+    value: string,
+    confidence: number,
     sql: Sql,
   ) {
     try {
@@ -73,7 +72,7 @@ export class AnnotationAggregateRepositoryPostgres
 
       const [annotation] = await sql<
         Annotation[]
-      >`insert into annotation (start_time, end_time, type, value, file_id) values (${start_time}, ${end_time}, ${type.value}, ${value}, ${file.id}) returning *`;
+      >`insert into annotation (start_time, end_time, type, value, file_id, confidence) values (${start_time}, ${end_time}, ${type.value}, ${value}, ${file.id}, ${confidence}) returning *`;
 
       const aggregate = {
         annotation: {
@@ -85,10 +84,8 @@ export class AnnotationAggregateRepositoryPostgres
           type: {
             value: annotation.type as AnnotationTypeEnum,
           },
-          value:
-            annotation.type === AnnotationTypeEnum.CONFIDENCE
-              ? Number(annotation.value)
-              : annotation.value,
+          value: annotation.value,
+          confidence: Number(annotation.confidence),
         },
         file,
       };
@@ -122,7 +119,8 @@ export class AnnotationAggregateRepositoryPostgres
     annotations: {
       span: AnnotationSpanVO;
       type: AnnotationTypeVO;
-      value: string | number;
+      value: string;
+      confidence: number;
     }[],
     sql: Sql,
   ) {
@@ -133,6 +131,7 @@ export class AnnotationAggregateRepositoryPostgres
         type: item.type.value,
         value: item.value,
         file_id: file.id,
+        confidence: item.confidence,
       }));
 
       const batch = await sql<
@@ -151,10 +150,8 @@ export class AnnotationAggregateRepositoryPostgres
               type: {
                 value: annotation.type as AnnotationTypeEnum,
               },
-              value:
-                annotation.type === AnnotationTypeEnum.CONFIDENCE
-                  ? Number(annotation.value)
-                  : annotation.value,
+              value: annotation.value,
+              confidence: Number(annotation.confidence),
             },
             file,
           });
@@ -173,7 +170,7 @@ export class AnnotationAggregateRepositoryPostgres
     try {
       const annotations = await sql<
         Annotation[]
-      >`select id, start_time, end_time, type, value, created_at from annotation where file_id = ${file.id}`;
+      >`select id, start_time, end_time, type, value, created_at, confidence from annotation where file_id = ${file.id}`;
 
       if (annotations.length === 0) {
         return [];
@@ -190,10 +187,8 @@ export class AnnotationAggregateRepositoryPostgres
             type: {
               value: annotation.type as AnnotationTypeEnum,
             },
-            value:
-              annotation.type === AnnotationTypeEnum.CONFIDENCE
-                ? Number(annotation.value)
-                : annotation.value,
+            value: annotation.value,
+            confidence: Number(annotation.confidence),
           },
           file,
         }),

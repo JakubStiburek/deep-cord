@@ -20,6 +20,7 @@ export interface Annotation {
   value: string;
   created_at: Date;
   file_id: string;
+  confidence: number;
 }
 export interface AnnotationInput {
   id?: string;
@@ -29,6 +30,7 @@ export interface AnnotationInput {
   value: string;
   created_at?: Date;
   file_id: string;
+  confidence?: number;
 }
 const annotation = {
   tableName: 'annotation',
@@ -40,6 +42,7 @@ const annotation = {
     'value',
     'created_at',
     'file_id',
+    'confidence',
   ],
   requiredForInsert: ['start_time', 'end_time', 'type', 'value', 'file_id'],
   primaryKey: 'id',
