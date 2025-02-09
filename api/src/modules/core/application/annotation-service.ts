@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { Sql } from 'postgres';
 import { CreateAnnotationDto } from '../ui/dto/create-annotation.dto';
 import { AnnotationAggregateRepository } from '../model/repository/annotation-aggregate.repository';
@@ -6,12 +6,13 @@ import { AnnotationAggregateRepositoryPostgres } from '../infrastructure/annotat
 import { AudioFileEntityRepositoryPostgres } from '../infrastructure/audio-file-entity-repository-postgres.implementation';
 import { AudioFileEntityRepository } from '../model/repository/audio-file-entity.repository';
 import { UpdateAnnotationDto } from '../ui/dto/update-annotation.dto';
-import { Annotation } from '../../../common/database/deep-cord-db-schema';
 import {
   updateAnnotationSpan,
   updateAnnotationValue,
 } from '../model/entity/annotation.entity';
 import { AnnotationAggregateSchema } from '../model/aggregate/annotation.aggregate';
+import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
+import { SpeakerVOSchema } from '../model/value-object/speaker.vo';
 
 export class AnnotationService {
   constructor(
@@ -78,6 +79,18 @@ export class AnnotationService {
       });
 
       return await this.annotationRepository.save(aggregate, sql);
+    });
+  }
+
+  async getSpeakers(fileId: string) {
+    return await this.sql.begin(async (sql) => {
+      const speakers = await sql<
+        { value: string }[]
+      >`select distinct value from annotation where file_id = ${fileId} and type = ${AnnotationTypeEnum.SPEAKER}`;
+
+      return speakers.map((speaker) =>
+        SpeakerVOSchema.parse({ value: speaker.value }),
+      );
     });
   }
 }

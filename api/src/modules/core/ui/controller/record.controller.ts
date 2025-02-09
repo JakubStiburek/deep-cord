@@ -26,6 +26,8 @@ import { AnnotationDto } from '../dto/annotation.dto';
 import { FileDto } from '../dto/file.dto';
 import { CreateAnnotationDto } from '../dto/create-annotation.dto';
 import { UpdateAnnotationDto } from '../dto/update-annotation.dto';
+import { SpeakerListDto } from '../dto/speaker-list.dto';
+import { SpeakerVOSchema } from '../../model/value-object/speaker.vo';
 
 @ApiTags('Records')
 @Controller('api/records')
@@ -120,6 +122,24 @@ export class RecordController {
   ) {
     try {
       await this.annotationService.delete(annotationId);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @Get(':id/speakers')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
+  @ApiOperation({ description: 'Get list of speakers' })
+  @ApiOkResponse({ type: SpeakerListDto })
+  async getSpeakers(@Param('id', ParseUUIDPipe) id: string) {
+    try {
+      return SpeakerListDto.fromDomain(
+        await this.annotationService.getSpeakers(id),
+      );
     } catch (err) {
       this.handleError(err);
     }
