@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { Sql } from 'postgres';
 import { CreateAnnotationDto } from '../ui/dto/create-annotation.dto';
 import { AnnotationAggregateRepository } from '../model/repository/annotation-aggregate.repository';
@@ -13,6 +13,7 @@ import {
 import { AnnotationAggregateSchema } from '../model/aggregate/annotation.aggregate';
 import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
 import { SpeakerVOSchema } from '../model/value-object/speaker.vo';
+import { SpeakerNotUniqueException } from '../model/exception/speaker-not-unique.exception';
 
 export class AnnotationService {
   constructor(
@@ -84,6 +85,8 @@ export class AnnotationService {
 
   async getSpeakers(fileId: string) {
     return await this.sql.begin(async (sql) => {
+      await this.fileRepository.getById(fileId, sql);
+
       const speakers = await sql<
         { value: string }[]
       >`select distinct value from annotation where file_id = ${fileId} and type = ${AnnotationTypeEnum.SPEAKER}`;
@@ -91,6 +94,36 @@ export class AnnotationService {
       return speakers.map((speaker) =>
         SpeakerVOSchema.parse({ value: speaker.value }),
       );
+    });
+  }
+
+  async renameSpeaker(
+    fileId: string,
+    changeData: { old: string; new: string },
+  ) {
+    return await this.sql.begin(async (sql) => {
+      const parsedChangeData = {
+        old: SpeakerVOSchema.parse({ value: changeData.old }),
+        new: SpeakerVOSchema.parse({ value: changeData.new }),
+      };
+      const speakers = await this.getSpeakers(fileId);
+      if (
+        !speakers
+          .map((speaker) => speaker.value)
+          .includes(parsedChangeData.old.value)
+      ) {
+        throw new NotFoundException();
+      }
+
+      if (
+        speakers
+          .map((speaker) => speaker.value)
+          .includes(parsedChangeData.new.value)
+      ) {
+        throw new SpeakerNotUniqueException();
+      }
+
+      await sql`update annotation set value = ${parsedChangeData.new.value} where file_id = ${fileId} and value = ${parsedChangeData.old.value}`;
     });
   }
 }

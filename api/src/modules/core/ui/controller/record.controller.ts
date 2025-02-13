@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -12,11 +13,16 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import {
+  ApiConflictResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetRecordResponseDto } from '../dto/get-record.response.dto';
@@ -27,7 +33,8 @@ import { FileDto } from '../dto/file.dto';
 import { CreateAnnotationDto } from '../dto/create-annotation.dto';
 import { UpdateAnnotationDto } from '../dto/update-annotation.dto';
 import { SpeakerListDto } from '../dto/speaker-list.dto';
-import { SpeakerVOSchema } from '../../model/value-object/speaker.vo';
+import { RenameSpeakerDto } from '../dto/rename-speaker.dto';
+import { SpeakerNotUniqueException } from '../../model/exception/speaker-not-unique.exception';
 
 @ApiTags('Records')
 @Controller('api/records')
@@ -145,9 +152,40 @@ export class RecordController {
     }
   }
 
+  @Put(':id/speakers')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
+  @ApiOperation({ description: 'Change name of a speaker.' })
+  @ApiNoContentResponse()
+  @HttpCode(204)
+  @ApiConflictResponse({
+    description: 'Speaker with that name is already used for this record',
+  })
+  @ApiNotFoundResponse()
+  async renameSpeaker(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: RenameSpeakerDto,
+  ) {
+    try {
+      await this.annotationService.renameSpeaker(id, {
+        old: body.speaker,
+        new: body.renameTo,
+      });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
   private handleError(err: unknown) {
     this.logger.error(err);
     if (err instanceof NotFoundException) {
+      throw err;
+    }
+
+    if (err instanceof SpeakerNotUniqueException) {
       throw err;
     }
 
