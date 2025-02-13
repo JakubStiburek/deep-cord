@@ -16,7 +16,9 @@ import {
   Put,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiConflictResponse,
+  ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -53,6 +55,8 @@ export class RecordController {
   })
   @ApiOperation({ description: "Get a record by it's file ID." })
   @ApiOkResponse({ type: GetRecordResponseDto })
+  @ApiNotFoundResponse({ description: "Record doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async getRecord(@Param('id', ParseUUIDPipe) id: string) {
     try {
       const annotations =
@@ -85,6 +89,9 @@ export class RecordController {
   })
   @ApiOperation({ description: 'Add annotation to record' })
   @HttpCode(201)
+  @ApiCreatedResponse({ description: 'Successfully added annotation' })
+  @ApiNotFoundResponse({ description: "Record doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async addAnnotation(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateAnnotationDto,
@@ -104,6 +111,8 @@ export class RecordController {
   })
   @ApiOperation({ description: 'Add annotation to record' })
   @HttpCode(201)
+  @ApiNotFoundResponse({ description: "Record or annotation doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async updateAnnotation(
     @Param('id', ParseUUIDPipe) id: string,
     @Param('annotationId', ParseUUIDPipe) annotationId: string,
@@ -124,6 +133,7 @@ export class RecordController {
   })
   @ApiOperation({ description: 'Delete an annotation' })
   @HttpCode(201)
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async deleteAnnotation(
     @Param('annotationId', ParseUUIDPipe) annotationId: string,
   ) {
@@ -142,6 +152,8 @@ export class RecordController {
   })
   @ApiOperation({ description: 'Get list of speakers' })
   @ApiOkResponse({ type: SpeakerListDto })
+  @ApiNotFoundResponse({ description: "Record doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async getSpeakers(@Param('id', ParseUUIDPipe) id: string) {
     try {
       return SpeakerListDto.fromDomain(
@@ -159,12 +171,13 @@ export class RecordController {
     description: 'ID of the file',
   })
   @ApiOperation({ description: 'Change name of a speaker.' })
-  @ApiNoContentResponse()
   @HttpCode(204)
+  @ApiNoContentResponse({ description: "Successfully updated speaker's name" })
   @ApiConflictResponse({
     description: 'Speaker with that name is already used for this record',
   })
-  @ApiNotFoundResponse()
+  @ApiNotFoundResponse({ description: "Record doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async renameSpeaker(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: RenameSpeakerDto,

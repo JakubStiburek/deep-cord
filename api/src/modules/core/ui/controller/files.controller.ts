@@ -18,6 +18,10 @@ import {
   ApiTags,
   ApiOkResponse,
   ApiOperation,
+  ApiConflictResponse,
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { FileDto } from '../dto/file.dto';
 import { AudioFileService } from '../../application/audio-file-service';
@@ -41,6 +45,10 @@ export class FilesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiOkResponse({ type: FileDto })
+  @ApiConflictResponse({
+    description: 'File with the same name already exists',
+  })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   @UseInterceptors(FileInterceptor('file'))
   async uploadAudioFile(
     @UploadedFile() file: Express.Multer.File,
@@ -85,13 +93,17 @@ export class FilesController {
   @Post(':id/transcriptions')
   @ApiOperation({ description: 'Request transcription of a file' })
   @HttpCode(201)
+  @ApiCreatedResponse({
+    description: 'Successfully transcribed file and added AI annotations',
+  })
+  @ApiNotFoundResponse({ description: "File doesn't exist" })
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
   async transcribeFile(@Param('id', ParseUUIDPipe) id: string) {
     await this.transcriptService.transcribe(id);
   }
 
   private handleError(err: unknown) {
     if (err instanceof NotUniqueException) {
-      this.logger.log('what');
       this.logger.warn(err);
       throw new ConflictException();
     }
