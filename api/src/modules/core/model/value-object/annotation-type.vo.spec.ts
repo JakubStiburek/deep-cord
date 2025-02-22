@@ -5,6 +5,7 @@ describe('(unit) AnnotationType', () => {
   it.each([
     [AnnotationTypeEnum.TRANSCRIPT, true],
     [AnnotationTypeEnum.SPEAKER, true],
+    [AnnotationTypeEnum.NOTE, true],
     ['invalid', false],
     [undefined, false],
   ])('should create and validate instance', (value, success) => {
