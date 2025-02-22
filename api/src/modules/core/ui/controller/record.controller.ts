@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
@@ -24,7 +23,6 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetRecordResponseDto } from '../dto/get-record.response.dto';
@@ -82,13 +80,13 @@ export class RecordController {
   }
 
   @Post(':id/annotations')
+  @HttpCode(201)
   @ApiParam({
     name: 'id',
     type: String,
     description: 'ID of the file',
   })
   @ApiOperation({ description: 'Add annotation to record' })
-  @HttpCode(201)
   @ApiCreatedResponse({ description: 'Successfully added annotation' })
   @ApiNotFoundResponse({ description: "Record doesn't exist" })
   @ApiBadRequestResponse({ description: 'Input validation failed' })
@@ -104,13 +102,14 @@ export class RecordController {
   }
 
   @Patch(':id/annotations/:annotationId')
+  @HttpCode(204)
   @ApiParam({
     name: 'id',
     type: String,
     description: 'ID of the file',
   })
   @ApiOperation({ description: 'Add annotation to record' })
-  @HttpCode(201)
+  @ApiNoContentResponse()
   @ApiNotFoundResponse({ description: "Record or annotation doesn't exist" })
   @ApiBadRequestResponse({ description: 'Input validation failed' })
   async updateAnnotation(
@@ -126,13 +125,14 @@ export class RecordController {
   }
 
   @Delete(':id/annotations/:annotationId')
+  @HttpCode(204)
   @ApiParam({
     name: 'id',
     type: String,
     description: 'ID of the file',
   })
   @ApiOperation({ description: 'Delete an annotation' })
-  @HttpCode(201)
+  @ApiNoContentResponse()
   @ApiBadRequestResponse({ description: 'Input validation failed' })
   async deleteAnnotation(
     @Param('annotationId', ParseUUIDPipe) annotationId: string,
@@ -165,13 +165,13 @@ export class RecordController {
   }
 
   @Put(':id/speakers')
+  @HttpCode(204)
   @ApiParam({
     name: 'id',
     type: String,
     description: 'ID of the file',
   })
   @ApiOperation({ description: 'Change name of a speaker.' })
-  @HttpCode(204)
   @ApiNoContentResponse({ description: "Successfully updated speaker's name" })
   @ApiConflictResponse({
     description: 'Speaker with that name is already used for this record',
@@ -187,6 +187,26 @@ export class RecordController {
         old: body.speaker,
         new: body.renameTo,
       });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the file',
+  })
+  @ApiOperation({
+    description: 'Delete audio file and associated annotations',
+  })
+  @ApiNoContentResponse()
+  @ApiBadRequestResponse({ description: 'Input validation failed' })
+  async deleteRecord(@Param('id', ParseUUIDPipe) id: string) {
+    try {
+      await this.annotationService.deleteRecord(id);
     } catch (err) {
       this.handleError(err);
     }

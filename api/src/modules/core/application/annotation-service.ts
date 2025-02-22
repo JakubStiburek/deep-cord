@@ -14,6 +14,7 @@ import { AnnotationAggregateSchema } from '../model/aggregate/annotation.aggrega
 import { AnnotationTypeEnum } from '../model/enum/annotation-type.enum';
 import { SpeakerVOSchema } from '../model/value-object/speaker.vo';
 import { SpeakerNotUniqueException } from '../model/exception/speaker-not-unique.exception';
+import { AudioFileService } from './audio-file-service';
 
 export class AnnotationService {
   constructor(
@@ -25,6 +26,8 @@ export class AnnotationService {
 
     @Inject(AudioFileEntityRepositoryPostgres)
     private readonly fileRepository: AudioFileEntityRepository,
+
+    private readonly audioFileService: AudioFileService,
   ) {}
 
   async add(fileId: string, dto: CreateAnnotationDto) {
@@ -124,6 +127,19 @@ export class AnnotationService {
       }
 
       await sql`update annotation set value = ${parsedChangeData.new.value} where file_id = ${fileId} and value = ${parsedChangeData.old.value}`;
+    });
+  }
+
+  async deleteRecord(fileId: string) {
+    await this.sql.begin(async (sql) => {
+      const file = await this.fileRepository.getById(fileId, sql);
+      await sql`delete from annotation where file_id = ${fileId}`;
+      await sql`delete from file where id = ${fileId}`;
+      await this.audioFileService.deleteFileFromCloudinary(
+        // 'http://res.cloudinary.com/dxjykcl03/video/upload/v1739104395/record-new-audio-file-2025-02-09.mp3'.split('/').reverse()[0].split('.')[0]
+        // "record-new-audio-file-2025-02-09"
+        file.uri.split('/').reverse()[0].split('.')[0],
+      );
     });
   }
 }

@@ -40,11 +40,12 @@ export class FilesController {
   ) {}
 
   @Post()
+  @HttpCode(201)
   @ApiOperation({
     description: 'Upload audio files to storage.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiOkResponse({ type: FileDto })
+  @ApiCreatedResponse({ type: FileDto })
   @ApiConflictResponse({
     description: 'File with the same name already exists',
   })

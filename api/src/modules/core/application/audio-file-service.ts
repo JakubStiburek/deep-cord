@@ -85,4 +85,25 @@ export class AudioFileService {
 
     return result.url;
   }
+
+  async deleteFileFromCloudinary(name: string) {
+    cloudinary.config({
+      cloud_name: this.cloudinaryCredentials.name,
+      api_key: this.cloudinaryCredentials.apiKey,
+      api_secret: this.cloudinaryCredentials.apiSecret,
+    });
+
+    await new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(
+        name,
+        {
+          resource_type: 'video',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          return resolve(result);
+        },
+      );
+    });
+  }
 }
