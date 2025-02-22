@@ -32,6 +32,7 @@ services:
     dockerContext: .
     dockerfilePath: ./Dockerfile
     rootDir: api
+    healthCheckPath: health
 
   - type: web
     name: deep-cord-web
